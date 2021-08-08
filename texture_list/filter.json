@@ -1,7 +1,9 @@
 {
-    "filter": {
-        "run_with": "python",
-        "location": "./texture_list.py",
-        "name": "Generate Texture List"
-    }
+    "filters": [
+        {
+            "run_with": "python",
+            "location": "./texture_list.py",
+            "name": "Generate Texture List"
+        }
+    ]
 }
