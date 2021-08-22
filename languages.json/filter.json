@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "run_with": "python",
+            "location": "./languages.py",
+            "name": "Generates languages.json"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "run_with": "python",
+            "location": "./flat_features.py",
+            "name": "Flattens feature-folder, allowing for nested files"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "run_with": "python",
+            "location": "./kra_convert.py",
+            "name": "Converts .kra (krita) files to .png"
+        }
+    ]
+}
