@@ -1,0 +1,9 @@
+{
+  "name": "psd_convert",
+  "version": "1.0.0",
+  "main": "./psd_convert.js",
+  "dependencies": {
+    "glob": "^7.1.7",
+    "psd": "^3.2.0"
+  }
+}
