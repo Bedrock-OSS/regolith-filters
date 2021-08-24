@@ -66,7 +66,7 @@ function parseBBModel(data) {
   }
 
   groups.forEach(function (g) {
-    if (!g.uuid) return;
+    if (!g.uuid && !g.name) return;
     let bone = compileGroup(g, all, model.meta.box_uv);
     bones.push(bone);
   });
