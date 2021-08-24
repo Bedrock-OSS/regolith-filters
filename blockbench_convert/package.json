@@ -1,0 +1,14 @@
+{
+  "name": "blockbench_convert",
+  "description": "Regolith filter for converting Blockbench files into Bedrock model json files",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Bedrock-OSS/regolith-filters.git",
+    "type": "git"
+  },
+  "version": "1.0.0",
+  "main": "./blockbench_convert.js",
+  "dependencies": {
+    "glob": "^7.1.7"
+  }
+}
