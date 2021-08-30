@@ -1,7 +1,7 @@
 {
     "filters": [
         {
-            "run_with": "nodejs",
+            "runWith": "nodejs",
             "location": "./psd_convert.js",
             "name": "Convert PSD files into PNG files"
         }

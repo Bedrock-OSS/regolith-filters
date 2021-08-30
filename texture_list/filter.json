@@ -1,7 +1,7 @@
 {
     "filters": [
         {
-            "run_with": "python",
+            "runWith": "python",
             "location": "./texture_list.py",
             "name": "Generate texture_list.json"
         }

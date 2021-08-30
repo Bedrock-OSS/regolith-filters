@@ -1,7 +1,7 @@
 {
     "filters": [
         {
-            "run_with": "python",
+            "runWith": "python",
             "location": "./json_cleaner.py",
             "name": "Cleans Json files for Easier Reading"
         }
