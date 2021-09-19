@@ -2,7 +2,7 @@
     "filters": [
         {
             "runWith": "python",
-            "location": "./fix_emissive.py",
+            "script": "./fix_emissive.py",
             "name": "Removes RGB values from transparent pixels"
         }
     ]

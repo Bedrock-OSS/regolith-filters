@@ -2,7 +2,7 @@
     "filters": [
         {
             "runWith": "nodejs",
-            "location": "./blockbench_convert.js",
+            "script": "./blockbench_convert.js",
             "name": "Convert Blockbench files into Bedrock model json files"
         }
     ]

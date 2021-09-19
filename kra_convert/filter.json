@@ -2,7 +2,7 @@
     "filters": [
         {
             "runWith": "python",
-            "location": "./kra_convert.py",
+            "script": "./kra_convert.py",
             "name": "Converts .kra (krita) files to .png"
         }
     ]

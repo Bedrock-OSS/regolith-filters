@@ -2,7 +2,7 @@
     "filters": [
         {
             "runWith": "python",
-            "location": "./languages.py",
+            "script": "./languages.py",
             "name": "Generates languages.json"
         }
     ]
