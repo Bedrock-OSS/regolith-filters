@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./fix_emissive.py",
-            "name": "Removes RGB values from transparent pixels"
+            "name": "Removing RGB values from transparent pixels"
         }
     ]
 }

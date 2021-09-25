@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./texture_list.py",
-            "name": "Generate texture_list.json"
+            "name": "Generating texture_list.json"
         }
     ]
 }

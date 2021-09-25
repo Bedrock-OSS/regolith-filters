@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./flat_features.py",
-            "name": "Flattens feature-folder, allowing for nested files"
+            "name": "Flattenig feature-folder, that allows for nested files"
         }
     ]
 }

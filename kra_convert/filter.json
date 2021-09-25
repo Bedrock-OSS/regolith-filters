@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./kra_convert.py",
-            "name": "Converts .kra (krita) files to .png"
+            "name": "Converting .kra (krita) files to .png"
         }
     ]
 }

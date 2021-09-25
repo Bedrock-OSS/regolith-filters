@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./json_cleaner.py",
-            "name": "Cleans Json files for Easier Reading"
+            "name": "Cleaning JSON files for easier reading"
         }
     ]
 }

@@ -3,7 +3,7 @@
         {
             "runWith": "nodejs",
             "script": "./psd_convert.js",
-            "name": "Convert PSD files into PNG files"
+            "name": "Converting .psd (Photoshop) files into PNG files"
         }
     ]
 }

@@ -3,7 +3,7 @@
         {
             "runWith": "nodejs",
             "script": "./blockbench_convert.js",
-            "name": "Convert Blockbench files into Bedrock model json files"
+            "name": "Converting .bbmodel (Blockbench) files into Bedrock model json files"
         }
     ]
 }

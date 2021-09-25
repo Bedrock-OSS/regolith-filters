@@ -3,7 +3,7 @@
         {
             "runWith": "python",
             "script": "./languages.py",
-            "name": "Generates languages.json"
+            "name": "Generating languages.json"
         }
     ]
 }
