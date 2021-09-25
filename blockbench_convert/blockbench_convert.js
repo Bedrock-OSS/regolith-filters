@@ -1,135 +1,129 @@
 const glob = require("glob");
 const fs = require("fs");
 
-console.warn("This filter is still WIP");
-
 glob("RP/models/**/*.bbmodel", null, function (er, files) {
   files.forEach(function (file) {
     fs.readFile(file, "utf8", function (err, data) {
-      fs.writeFileSync(file.substr(0, file.lastIndexOf('.')) + ".json", parseBBModel(data));
+      let resultName = file.substr(0, file.lastIndexOf(".")) + ".json";
+      console.log("Converting " + file + " into " + resultName);
+      fs.writeFileSync(
+        resultName,
+        exportModel(JSON.parse(data))
+      );
+      fs.unlinkSync(file);
     });
   });
 });
 
-function parseBBModel(data) {
-  let model = JSON.parse(data);
+// From: https://github.com/bridge-core/editor/blob/main/src/components/ImportFile/BBModel.ts
 
-  var entitymodel = {};
-  var main_tag = {
-    format_version: model.outliner.find((group) => group.bedrock_binding)
-      ? "1.16.0"
-      : "1.12.0",
+// From: https://github.com/JannisX11/blockbench/blob/1701f764641376414d29100c4f6c7cd74997fad8/js/io/formats/bedrock.js#L652
+function exportModel(data) {
+  let entitymodel = {};
+  let main_tag = {
+    format_version: "1.12.0",
     "minecraft:geometry": [entitymodel],
   };
   entitymodel.description = {
-    identifier: "geometry." + (model.geometry_name || "unknown"),
-    texture_width: model.resolution.width || 16,
-    texture_height: model.resolution.height || 16,
+    identifier: "geometry." + (data.geometry_name || "unknown"),
+    texture_width: data.resolution.width || 16,
+    texture_height: data.resolution.height || 16,
   };
-  // Make a map of UUID -> Element/Group
-  let all = {};
-  model.outliner.forEach((x) => {
-    all[x.uuid] = x;
-  });
-  model.elements.forEach((x) => {
-    all[x.uuid] = x;
-  });
-  // Add parent link
-  model.outliner.forEach((x) => {
-    if (x.children) {
-      x.children.forEach((c) => {
-        all[c].parent = x.uuid;
-      });
-    }
-  });
+  let bones = [];
 
-  var bones = [];
-
-  var groups = model.outliner;
-  // Collect loose elements and group into bb_main group
-  var loose_elements = [];
-  model.elements.forEach((obj) => {
-    if (!obj.parent) {
-      loose_elements.push(obj.uuid);
-      obj.parent = "bb_main";
-    }
-  });
-  if (loose_elements.length) {
-    let group = {
-      name: "bb_main",
-      origin: [0, 0, 0],
-      export: true,
-      children: loose_elements,
-    };
-    all.bb_main = group;
-    groups.splice(0, 0, group);
-  }
-
-  groups.forEach(function (g) {
-    if (!g.uuid && !g.name) return;
-    let bone = compileGroup(g, all, model.meta.box_uv);
+  let groups = getAllGroups(data);
+  groups.forEach((group) => {
+    let bone = compileGroup(data, group);
     bones.push(bone);
   });
 
-  // if (bones.length && options.visible_box !== false) {
-  //   let visible_box = calculateVisibleBox();
-  //   entitymodel.description.visible_bounds_width = visible_box[0] || 0;
-  //   entitymodel.description.visible_bounds_height = visible_box[1] || 0;
-  //   entitymodel.description.visible_bounds_offset = [0, visible_box[2] || 0, 0];
-  // }
   if (bones.length) {
+    let visible_box = calculateVisibleBox(data);
+    entitymodel.description.visible_bounds_width = visible_box[0] || 0;
+    entitymodel.description.visible_bounds_height = visible_box[1] || 0;
+    entitymodel.description.visible_bounds_offset = [0, visible_box[2] || 0, 0];
+
     entitymodel.bones = bones;
   }
 
   return compileJSON(main_tag);
 }
 
-function compileGroup(g, all, box_uv) {
-  //Bone
-  var bone = {};
-  bone.name = g.name;
-  if (g.parent) {
-    bone.parent = all[g.parent].name;
-  }
-  bone.pivot = (g.origin ?? [0, 0, 0]).slice();
-  bone.pivot[0] *= -1;
-  if (g.rotation && !allEqual0(g.rotation)) {
-    bone.rotation = g.rotation.slice();
-    bone.rotation[0] *= -1;
-    bone.rotation[1] *= -1;
-  }
-  if (g.bedrock_binding) {
-    bone.binding = g.bedrock_binding;
-  }
-  // TODO: No clue what's that
-  // if (g.reset) {
-  //   bone.reset = true;
-  // }
-  // if (g.mirror_uv && Project.box_uv) {
-  //   bone.mirror = true;
-  // }
-  // if (g.material) {
-  //   bone.material = g.material;
-  // }
-  //Cubes
-  var cubes = [];
-  var locators = {};
+//From: https://github.com/JannisX11/blockbench/blob/1701f764641376414d29100c4f6c7cd74997fad8/js/outliner/group.js#L492
+function getAllGroups(data) {
+  let groups = [];
 
-  for (var c of g.children ?? []) {
-    let obj = all[c];
-    if (obj.export || obj.export === void 0) {
-      if (!obj.children && obj.type !== "locator") {
-        let template = compileCube(obj, bone, box_uv);
-        cubes.push(template);
-      } else if (obj.type && obj.type === "locator") {
-        let key = obj.name;
-        let offset = obj.from.slice();
+  function iterate(array, parent) {
+    for (let obj of array) {
+      if (obj instanceof Object) {
+        obj.parent = parent;
+        groups.push(obj);
+        iterate(obj.children, obj.name);
+      }
+    }
+  }
+
+  iterate(data.outliner, undefined);
+  return groups;
+}
+
+//From: https://github.com/JannisX11/blockbench/blob/1701f764641376414d29100c4f6c7cd74997fad8/js/io/formats/bedrock.js#L571
+function compileGroup(data, group) {
+  let bone = {};
+  bone.name = group.name;
+  bone.parent = group.parent;
+  bone.pivot = group.origin.slice();
+  bone.pivot[0] *= -1;
+  if (group.rotation) {
+    if (
+      group.rotation[0] !== 0 ||
+      group.rotation[1] !== 0 ||
+      group.rotation[2] !== 0
+    ) {
+      bone.rotation = group.rotation.slice();
+      bone.rotation[0] *= -1;
+      bone.rotation[1] *= -1;
+    }
+  }
+  if (group.bedrock_binding) {
+    bone.binding = group.bedrock_binding;
+  }
+  if (group.reset) {
+    bone.reset = true;
+  }
+  if (group.mirror_uv && data.meta.box_uv) {
+    bone.mirror = true;
+  }
+  if (group.material) {
+    bone.material = group.material;
+  }
+
+  let cubes = [];
+  let locators = {};
+
+  for (let child of group.children) {
+    if (!(child instanceof Object)) {
+      let element = data.elements.find((element) => element.uuid === child);
+      if (element.type !== "locator") {
+        let cube = compileCube(data, element, bone);
+        cubes.push(cube);
+      } else if (element.type === "locator") {
+        let key = element.name;
+        let offset = element.from.slice();
         offset[0] *= -1;
 
-        if (obj.rotation && !allEqual0(obj.rotation)) {
+        if (
+          element.rotation[0] !== 0 ||
+          element.rotation[1] !== 0 ||
+          element.rotation[2] !== 0
+        ) {
           locators[key] = {
             offset,
-            rotation: [-obj.rotation[0], -obj.rotation[0], obj.rotation[0]],
+            rotation: [
+              -element.rotation[0],
+              -element.rotation[0],
+              element.rotation[0],
+            ],
           };
         } else {
           locators[key] = offset;
@@ -147,86 +141,149 @@ function compileGroup(g, all, box_uv) {
   return bone;
 }
 
-function compileCube(obj, bone, box_uv) {
-  var template = {
-    origin: obj.from.slice(),
-    size: cubeSize(obj),
-    // TODO: No clue what's that
-    inflate: obj.inflate || undefined,
+//From: https://github.com/JannisX11/blockbench/blob/1701f764641376414d29100c4f6c7cd74997fad8/js/io/formats/bedrock.js#L516
+function compileCube(data, element, bone) {
+  let cube = {
+    origin: element.from ? element.from.slice() : undefined,
+    size: [
+      element.to[0] - element.from[0],
+      element.to[1] - element.from[1],
+      element.to[2] - element.from[2],
+    ],
+    inflate: element.inflate || undefined,
   };
-  if (box_uv) {
-    template = new oneLiner(template);
+  cube.origin[0] = -(cube.origin[0] + cube.size[0]);
+
+  if (element.rotation) {
+    if (
+      element.rotation[0] !== 0 ||
+      element.rotation[1] !== 0 ||
+      element.rotation[2] !== 0
+    ) {
+      cube.pivot = element.origin.slice();
+      cube.pivot[0] *= -1;
+
+      cube.rotation = element.rotation.slice();
+      cube.rotation.forEach(function (br, axis) {
+        if (axis !== 2) cube.rotation[axis] *= -1;
+      });
+    }
   }
-  template.origin[0] = -(template.origin[0] + template.size[0]);
 
-  if (obj.rotation && !allEqual0(obj.rotation)) {
-    template.pivot = obj.origin.slice();
-    template.pivot[0] *= -1;
-
-    template.rotation = obj.rotation.slice();
-    template.rotation.forEach(function (br, axis) {
-      if (axis != 2) template.rotation[axis] *= -1;
-    });
-  }
-
-  if (box_uv) {
-    template.uv = obj.uv_offset;
-    // TODO: No clue what's that
-    // if (obj.mirror_uv === !bone.mirror) {
-    //   template.mirror = obj.mirror_uv;
-    // }
+  if (data.meta.box_uv) {
+    cube.uv = element.uv_offset;
+    if (element.mirror_uv === !bone.mirror) {
+      cube.mirror = element.mirror_uv;
+    }
   } else {
-    template.uv = {};
-    for (var key in obj.faces) {
-      var face = obj.faces[key];
+    cube.uv = {};
+    for (let key in element.faces) {
+      let face = element.faces[key];
       if (face.texture !== null) {
-        template.uv[key] = new oneLiner({
+        cube.uv[key] = {
           uv: [face.uv[0], face.uv[1]],
-          uv_size: squareSize(face.uv),
-        });
-        // TODO: No clue what's that
-        // if (face.material_name) {
-        //   template.uv[key].material_instance = face.material_name;
-        // }
-        if (key == "up" || key == "down") {
-          template.uv[key].uv[0] += template.uv[key].uv_size[0];
-          template.uv[key].uv[1] += template.uv[key].uv_size[1];
-          template.uv[key].uv_size[0] *= -1;
-          template.uv[key].uv_size[1] *= -1;
+          uv_size: [face.uv[2] - face.uv[0], face.uv[3] - face.uv[1]],
+        };
+        if (face.material_name) {
+          cube.uv[key].material_instance = face.material_name;
+        }
+        if (key === "up" || key === "down") {
+          cube.uv[key].uv[0] += cube.uv[key].uv_size[0];
+          cube.uv[key].uv[1] += cube.uv[key].uv_size[1];
+          cube.uv[key].uv_size[0] *= -1;
+          cube.uv[key].uv_size[1] *= -1;
         }
       }
     }
   }
-  return template;
+  return cube;
 }
 
-function cubeSize(scope) {
-  function getA(axis) {
-    return scope.to[axis] - scope.from[axis];
+//From: https://github.com/JannisX11/blockbench/blob/1701f764641376414d29100c4f6c7cd74997fad8/js/io/formats/bedrock.js#L276
+function calculateVisibleBox(data) {
+  let visible_box = {
+    max: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    min: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+  };
+
+  const elements = data.elements;
+  elements.forEach((element) => {
+    if (!element.to || !element.from) return;
+
+    visible_box.max.x = Math.max(
+      visible_box.max.x,
+      element.from[0],
+      element.to[0]
+    );
+    visible_box.min.x = Math.min(
+      visible_box.min.x,
+      element.from[0],
+      element.to[0]
+    );
+
+    visible_box.max.y = Math.max(
+      visible_box.max.y,
+      element.from[1],
+      element.to[1]
+    );
+    visible_box.min.y = Math.min(
+      visible_box.min.y,
+      element.from[1],
+      element.to[1]
+    );
+
+    visible_box.max.z = Math.max(
+      visible_box.max.z,
+      element.from[2],
+      element.to[2]
+    );
+    visible_box.min.z = Math.min(
+      visible_box.min.z,
+      element.from[2],
+      element.to[2]
+    );
+  });
+
+  visible_box.max.x += 8;
+  visible_box.min.x += 8;
+  visible_box.max.y += 8;
+  visible_box.min.y += 8;
+  visible_box.max.z += 8;
+  visible_box.min.z += 8;
+
+  //Width
+  let radius = Math.max(
+    visible_box.max.x,
+    visible_box.max.z,
+    -visible_box.min.x,
+    -visible_box.min.z
+  );
+  if (Math.abs(radius) === Infinity) {
+    radius = 0;
   }
-  return [getA(0), getA(1), getA(2)];
+  let width = Math.ceil((radius * 2) / 16);
+  width = Math.max(width, data.visible_box[0]);
+
+  //Height
+  let y_min = Math.floor(visible_box.min.y / 16);
+  let y_max = Math.ceil(visible_box.max.y / 16);
+  if (y_min === Infinity) y_min = 0;
+  if (y_max === Infinity) y_max = 0;
+  y_min = Math.min(y_min, data.visible_box[2] - data.visible_box[1] / 2);
+  y_max = Math.max(y_max, data.visible_box[2] + data.visible_box[1] / 2);
+
+  return [width, y_max - y_min, (y_max + y_min) / 2];
 }
 
-function squareSize(scope) {
-  return [scope[2] - scope[0], scope[3] - scope[1]];
-}
-
-function allEqual0(a) {
-  return a[0] === 0 && a[1] === 0 && a[2] === 0;
-}
-
-class oneLiner {
-  constructor(data) {
-    if (data !== undefined) {
-      for (var key in data) {
-        if (data.hasOwnProperty(key)) {
-          this[key] = data[key];
-        }
-      }
-    }
-  }
-}
-
+// From: https://github.com/JannisX11/blockbench/blob/914e7eb1f74232c1a31ccf278c793309bb163848/js/io/io.js#L328
 function compileJSON(object, options) {
   if (typeof options !== "object") options = {};
   function newLine(tabs) {
@@ -314,44 +371,3 @@ function compileJSON(object, options) {
   }
   return handleVar(object, 1);
 }
-
-// function calculateVisibleBox() {
-//   var visible_box = new THREE.Box3();
-//   Canvas.withoutGizmos(() => {
-//     Cube.all.forEach((cube) => {
-//       if (cube.export && cube.mesh) {
-//         visible_box.expandByObject(cube.mesh);
-//       }
-//     });
-//   });
-
-//   var offset = new THREE.Vector3(8, 8, 8);
-//   visible_box.max.add(offset);
-//   visible_box.min.add(offset);
-
-//   // Width
-//   var radius = Math.max(
-//     visible_box.max.x,
-//     visible_box.max.z,
-//     -visible_box.min.x,
-//     -visible_box.min.z
-//   );
-//   if (Math.abs(radius) === Infinity) {
-//     radius = 0;
-//   }
-//   let width = Math.ceil((radius * 2) / 16);
-//   width = Math.max(width, Project.visible_box[0]);
-//   Project.visible_box[0] = width;
-
-//   //Height
-//   let y_min = Math.floor(visible_box.min.y / 16);
-//   let y_max = Math.ceil(visible_box.max.y / 16);
-//   if (y_min === Infinity) y_min = 0;
-//   if (y_max === Infinity) y_max = 0;
-//   y_min = Math.min(y_min, Project.visible_box[2] - Project.visible_box[1] / 2);
-//   y_max = Math.max(y_max, Project.visible_box[2] + Project.visible_box[1] / 2);
-
-//   Project.visible_box.replace([width, y_max - y_min, (y_max + y_min) / 2]);
-
-//   return Project.visible_box;
-// }
