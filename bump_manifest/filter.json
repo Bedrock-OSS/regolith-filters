@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "runWith": "python",
+            "script": "./bump_manifest.py",
+            "name": "Bumps manifest version"
+        }
+    ]
+}
