@@ -1,14 +1,15 @@
 import os
 import json
 from typing import List
+from pathlib import Path
 
 def create_version_file() -> None:
     """
     Creates a version file.
     """
 
-    os.mkdir('./data/')
-    os.mkdir('./data/bump_manifest/')
+    Path("./data/bump_manifest/").mkdir(parents=True, exist_ok=True)
+
     with open('./data/bump_manifest/version.json', 'a') as file:
         json.dump({'version': [1, 0, 0]}, file)
 
@@ -63,7 +64,7 @@ def main():
 
     # Write new version to resource pack
     try:
-        with open('RP/manifest.json') as manifest_file:
+        with open('./RP/manifest.json') as manifest_file:
             manifest = json.load(manifest_file)
             json.dump(update_manifest(manifest), manifest_file)
     except FileNotFoundError:
@@ -71,7 +72,7 @@ def main():
 
     # Write new version to resource pack
     try:
-        with open('BP/manifest.json') as manifest_file:
+        with open('./BP/manifest.json') as manifest_file:
             manifest = json.load(manifest_file)
             json.dump(update_manifest(manifest), manifest_file)
     except FileNotFoundError:
