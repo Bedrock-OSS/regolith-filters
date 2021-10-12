@@ -16,6 +16,8 @@ def create_version_file() -> None:
 def get_version() -> str:
     """
     Gets the current version number from the version.json file.
+
+    Saves new version back to the file.
     """
 
     path = './data/bump_manifest/version.json'
@@ -24,15 +26,16 @@ def get_version() -> str:
     if not os.path.exists(path):
         create_version_file()
 
+    # Read version file
     with open(path, 'r') as f:
-        return json.load(f)['version']
+        data = json.load(f)
 
-def update_version(version: List[int]):
-    """
-    Takes in a version string and updates the minor version number by one.
-    """
+    # Update version file
+    data['version'] = data['version'][-1] + 1
+    with open(path, 'w') as f:
+        json.dump(f)
 
-    version[-1] = version[-1] + 1
+    return data['version']
 
 
 def update_manifest(manifest: dict, version: List[int] = None) -> dict:
@@ -55,9 +58,9 @@ def main():
     Program execution begins here.
     """
 
-    # Get current version, and update
+    # Get current version, and update the file
     version = get_version()
-    update_version(version)
+
     print("Pack updated to version: ", str(version))
 
     # Write new version to resource pack
