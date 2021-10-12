@@ -7,9 +7,9 @@ def create_version_file() -> None:
     Creates a version file.
     """
 
-    os.mkdir('data/')
-    os.mkdir('data/bump_manifest/')
-    with open('data/bump_manifest/version.json', 'a') as file:
+    os.mkdir('./data/')
+    os.mkdir('./data/bump_manifest/')
+    with open('./data/bump_manifest/version.json', 'a') as file:
         json.dump({'version': [1, 0, 0]}, file)
 
 def get_version() -> str:
@@ -17,7 +17,7 @@ def get_version() -> str:
     Gets the current version number from the version.json file.
     """
 
-    path = 'data/bump_manifest/'
+    path = './data/bump_manifest/version.json'
 
     # Create version file, if it doesn't exist
     if not os.path.exists(path):
