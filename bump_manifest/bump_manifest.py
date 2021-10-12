@@ -35,13 +35,11 @@ def update_version(version: List[int]):
     version[-1] = version[-1] + 1
 
 
-def update_manifest(manifest: dict):
+def update_manifest(manifest: dict, version: List[int] = None) -> dict:
     """
     Takes in a manifest and updates the minor version number by one.
     """
 
-    version = manifest['header']['version']
-    update_version(version)
     manifest['header']['version'] = version
 
     for module in manifest.get("modules", []):
@@ -64,19 +62,22 @@ def main():
 
     # Write new version to resource pack
     try:
-        with open('./RP/manifest.json', 'r+') as manifest_file:
+        with open('./RP/manifest.json', 'r') as manifest_file:
             manifest = json.load(manifest_file)
 
-            json.dump(update_manifest(manifest), manifest_file, indent=4)
+        with open('./RP/manifest.json', 'w') as manifest_file:
+            json.dump(update_manifest(manifest, version), manifest_file, indent=4)
     except FileNotFoundError:
         pass
 
     # Write new version to resource pack
     try:
-        with open('./BP/manifest.json', 'r+') as manifest_file:
+        with open('./BP/manifest.json', 'r') as manifest_file:
             manifest = json.load(manifest_file)
 
-            json.dump(update_manifest(manifest), manifest_file, indent=4)
+        with open('./BP/manifest.json', 'w') as manifest_file:
+            json.dump(update_manifest(manifest, version), manifest_file, indent=4)
+
     except FileNotFoundError:
         pass
 
