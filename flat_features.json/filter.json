@@ -1,9 +1,0 @@
-{
-    "filters": [
-        {
-            "runWith": "python",
-            "script": "./flat_features.py",
-            "name": "Flattenig feature-folder, that allows for nested files"
-        }
-    ]
-}
