@@ -11,7 +11,7 @@ def create_version_file() -> None:
     Path("./data/bump_manifest/").mkdir(parents=True, exist_ok=True)
 
     with open('./data/bump_manifest/version.json', 'a') as file:
-        json.dump({'version': [1, 0, 0]}, file)
+        json.dump({'version': [1, 0, 0]}, file, indent=4)
 
 def get_version() -> str:
     """
@@ -33,7 +33,7 @@ def get_version() -> str:
     # Update version file
     data['version'] = data['version'][-1] + 1
     with open(path, 'w') as f:
-        json.dump(f)
+        json.dump(data, f, indent=4)
 
     return data['version']
 
