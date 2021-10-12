@@ -67,8 +67,7 @@ def main():
         with open('./RP/manifest.json', 'r+') as manifest_file:
             manifest = json.load(manifest_file)
 
-            manifest_file.seek(0)
-            json.dump(update_manifest(manifest), manifest_file)
+            json.dump(update_manifest(manifest), manifest_file, indent=4)
     except FileNotFoundError:
         pass
 
@@ -77,8 +76,7 @@ def main():
         with open('./BP/manifest.json', 'r+') as manifest_file:
             manifest = json.load(manifest_file)
 
-            manifest_file.seek(0)
-            json.dump(update_manifest(manifest), manifest_file)
+            json.dump(update_manifest(manifest), manifest_file, indent=4)
     except FileNotFoundError:
         pass
 
