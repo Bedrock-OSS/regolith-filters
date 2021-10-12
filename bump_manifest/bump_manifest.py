@@ -64,16 +64,20 @@ def main():
 
     # Write new version to resource pack
     try:
-        with open('./RP/manifest.json') as manifest_file:
+        with open('./RP/manifest.json', 'r+') as manifest_file:
             manifest = json.load(manifest_file)
+
+            manifest_file.seek(0)
             json.dump(update_manifest(manifest), manifest_file)
     except FileNotFoundError:
         pass
 
     # Write new version to resource pack
     try:
-        with open('./BP/manifest.json') as manifest_file:
+        with open('./BP/manifest.json', 'r+') as manifest_file:
             manifest = json.load(manifest_file)
+
+            manifest_file.seek(0)
             json.dump(update_manifest(manifest), manifest_file)
     except FileNotFoundError:
         pass
