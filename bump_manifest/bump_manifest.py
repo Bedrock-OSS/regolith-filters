@@ -31,7 +31,7 @@ def get_version() -> str:
         data = json.load(f)
 
     # Update version file
-    data['version'] = data['version'][-1] + 1
+    data['version'][-1] = data['version'][-1] + 1
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
