@@ -21,7 +21,8 @@ Simply add to your filter list, like this:
 
 ## version.json
 
-This filter uses a pack located in your data folder. By default `packs/data/bump_manifest/version.json`. You may edit this file to set your packs current version, or to update the major version. 
+This filter uses a file located in your data folder to track current version. By default the file will be located at `packs/data/bump_manifest/version.json`, and will start at `[1, 0, 0]`.
 
-By default this file will start at `[1, 0, 0]`, and will update by one minor version each compile: `[1, 0, 1]`
+You may edit this file by hand to set your packs current version, for example if you need to update the major version, or to reset the minor version.
 
+Every time the filter runs, the version will update (e.g, `[1, 0, 1`]), and the version will be copied into the manifest file.
