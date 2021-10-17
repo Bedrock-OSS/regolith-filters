@@ -1,9 +1,0 @@
-{
-    "filters": [
-        {
-            "runWith": "python",
-            "script": "./languages.py",
-            "name": "Generating languages.json"
-        }
-    ]
-}
