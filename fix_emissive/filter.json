@@ -1,4 +1,5 @@
 {
+    "description": "Fixes emissive issues in your textures, by removing the color data from fully transparent pixels.",
     "filters": [
         {
             "runWith": "python",
