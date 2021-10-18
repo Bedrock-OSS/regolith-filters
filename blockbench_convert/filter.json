@@ -1,4 +1,5 @@
 {
+    "description": "Converts blockbench models into `.geometry.json` files.",
     "filters": [
         {
             "runWith": "nodejs",

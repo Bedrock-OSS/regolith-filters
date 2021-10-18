@@ -1,4 +1,5 @@
 {
+    "description": "Converts Photoshop files into `.png` files with the same name and path.",
     "filters": [
         {
             "runWith": "nodejs",

@@ -1,4 +1,5 @@
 {
+    "description": "Removes comments from all json files in the project. Useful, since some filters cannot understand files with comments.",
     "filters": [
         {
             "runWith": "python",

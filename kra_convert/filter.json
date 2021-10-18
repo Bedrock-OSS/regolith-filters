@@ -1,4 +1,5 @@
 {
+    "description": "Converts Krita files into `.png` files with the same name and path.",
     "filters": [
         {
             "runWith": "python",
