@@ -74,6 +74,7 @@ def main():
         language_file = resource_pack.get_language_file(language)
     except AssetNotFoundError:
         print(f"Warning: {language} file not found, creating...")
+        Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
         open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
         language_file = LanguageFile(file_path=f'texts/{language}', pack=resource_pack)
 

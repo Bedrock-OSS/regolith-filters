@@ -1,3 +1,0 @@
-# Language Assist
-
-Placeholder text.

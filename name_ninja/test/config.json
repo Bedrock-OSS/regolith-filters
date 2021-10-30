@@ -50,7 +50,7 @@
                         "runWith": "python",
                         "script": "../name_ninja.py",
                         "settings": {
-                            "language": "en_GB.lang",
+                            "language": "en_US.lang",
                             "overwrite": false,
                             "entities": {
                                 "auto_name": true,

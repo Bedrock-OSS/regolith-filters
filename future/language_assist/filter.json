@@ -1,9 +1,0 @@
-{
-    "filters": [
-        {
-            "runWith": "python",
-            "script": "./language_assist.py",
-            "name": "Language Assist"
-        }
-    ]
-}
