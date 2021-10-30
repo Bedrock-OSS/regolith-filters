@@ -1,0 +1,15 @@
+{
+    "resource_pack_name": "pack.name",
+    "texture_name": "atlas.items",
+    "texture_data": {
+        "name_ninja.bell_pepper": {
+            "textures": "textures/items/bell_pepper"
+        },
+        "name_ninja.pecan": {
+            "textures": "textures/items/pecan"
+        },
+        "name_ninja.corn_flakes": {
+            "textures": "textures/items/corn_flakes"
+        }
+    }
+}

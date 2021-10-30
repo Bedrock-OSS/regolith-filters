@@ -1,0 +1,19 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:block": {
+        "description": {
+            "identifier": "name_ninja:regolith"
+        },
+        "components": {
+            "minecraft:destroy_time": 7,
+            "minecraft:explosion_resistance": 3,
+            "minecraft:geometry": "geometry.block",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "regolith",
+                    "render_method": "opaque"
+                }
+            }
+        }
+    }
+}

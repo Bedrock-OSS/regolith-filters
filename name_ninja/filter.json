@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "runWith": "python",
+            "script": "./name_ninja.py",
+            "name": "Language Assist"
+        }
+    ]
+}

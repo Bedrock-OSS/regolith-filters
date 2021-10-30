@@ -1,0 +1,6 @@
+pack.name=§bName Ninja Test
+pack.description=Test Pack for the name_ninja Regolith Filter
+
+item.name_ninja:bell_pepper=§3Green Bell Pepper
+tile.name_ninja:regolith.name=§2Regolith Shards
+entity.name_ninja:house_cat.name=Kitty Cat
