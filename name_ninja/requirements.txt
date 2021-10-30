@@ -1,0 +1,2 @@
+dpath==2.0.5
+Send2Trash==1.8.0
