@@ -1,0 +1,7 @@
+{
+    "filters": [{
+        "runWith": "python",
+        "script": "./gimp_convert.py",
+        "name": "gimp_convert"
+    }]
+}
