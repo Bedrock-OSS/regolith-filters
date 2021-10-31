@@ -11,7 +11,7 @@
                 "unsafe": false,
                 "filters": [
                     {
-                        "url": "github.com/SirLich/regolith-filters/name_ninja",
+                        "filter": "name_ninja",
                         "settings": {
                             "language": "en_US.lang",
                             "overwrite": false,

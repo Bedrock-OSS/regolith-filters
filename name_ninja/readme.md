@@ -44,7 +44,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 
 ```json
 {
-	"url": "github.com/SirLich/regolith-filters/name_ninja",
+	"filter": "name_ninja",
 	"settings": {
 		"language": "en_GB.lang",
 		"overwrite": true,
