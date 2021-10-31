@@ -84,7 +84,7 @@ def main():
 
     if sort:
         language_file.translations.sort(key=lambda t: t.key)
-        
+
     project.save()
 
 if __name__ == "__main__":
