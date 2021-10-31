@@ -1,15 +1,23 @@
-import glob, os, json
+import json
+from itertools import chain
+from pathlib import Path
+
+
+TEXTURES_PATH = Path("RP/textures")
 
 def list_textures():
     textures = []
-    for texture in glob.glob("./RP/textures/**/*.png", recursive=True)+glob.glob("./RP/textures/**/*.tga", recursive=True):
-        bn = os.path.splitext(os.path.basename(texture))[1]
-        texture = texture.replace(bn,"").replace("./","").replace("\\","/").replace("RP/", "", 1)
-        textures.append(texture)
+    for texture in chain(
+            TEXTURES_PATH.glob("**/*.png"), TEXTURES_PATH.glob("**/*.tga")):
+        textures.append(texture.relative_to("RP").with_suffix("").as_posix())
     return textures
 
-if not os.path.exists("./RP/textures/texture_list.json"):
-    with open("./RP/textures/texture_list.json", "w") as f:
-        json.dump(list_textures(), f, indent=2)
+def main():
+    texture_list_path = TEXTURES_PATH / "texture_list.json"
+    texture_list_path.parent.mkdir(parents=True, exist_ok=True)
 
-list_textures()
+    with texture_list_path.open("w") as f:
+        json.dump(list_textures(), f, indent='\t')
+
+if __name__ == "__main__":
+    main()
