@@ -1,6 +1,6 @@
 # Name Ninja
 
-This filter is used to automatically generate entity, block, and item names, based on a custom 'name' field, or automatically generated based on the entities identifier.
+This filter is used to automatically generate entity, block, spawn egg, and item names, based on a custom 'name' field, or automatically generated based on the entities identifier.
 
 Simply add a `name` field into the description of a file:
 
@@ -48,6 +48,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 	"settings": {
 		"language": "en_GB.lang",
 		"overwrite": true,
+		"sort": true,
 		"entities": {
 			"auto_name": true,
 			"prefix": "§1",
@@ -76,6 +77,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 |-----------|------------|-----------------------------------------------------------------------------------------------------|
 | language  | en_US.lang | The language file where you want to place the translations.                                         |
 | overwrite | False      | Whether languages codes should overwrite/replace translations already defined in the language file. |
+| sort      | False      | Whether to sort the language file, on export. Useful for grouping assets.                           |
 
 As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs` are always the same. The approach simply gives you more flexibility per asset-type.
 
