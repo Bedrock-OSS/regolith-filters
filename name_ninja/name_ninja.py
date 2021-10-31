@@ -58,6 +58,7 @@ def main():
 
     overwrite = settings.get("overwrite", False)
     language = settings.get("language", "en_US.lang")
+    sort = settings.get("sort", False)
 
     project = Project("./BP", "./RP")
     behavior_pack = project.behavior_pack
@@ -81,6 +82,9 @@ def main():
     for translation in translations:
         language_file.add_translation(translation, overwrite = overwrite)
 
+    if sort:
+        language_file.translations.sort(key=lambda t: t.key)
+        
     project.save()
 
 if __name__ == "__main__":

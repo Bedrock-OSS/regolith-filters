@@ -546,7 +546,7 @@ class Pack():
     ## TODO: Move these static methods OUT
     @staticmethod
     def get_json_from_path(path:str) -> dict:
-        with open(path, "r") as fh:
+        with open(path, "r", encoding='utf8') as fh:
             return Pack.__get_json_from_file(fh)
 
     @staticmethod
