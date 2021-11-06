@@ -1,9 +1,0 @@
-{
-    "filters": [
-        {
-            "run_with": "python",
-            "location": "./nested_folders.py",
-            "name": "Flattens specific addon folders, allowing for nested files."
-        }
-    ]
-}
