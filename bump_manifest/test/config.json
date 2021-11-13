@@ -1,0 +1,37 @@
+{
+    "name": "bump_manifest_test",
+    "author": "Regolith",
+    "packs": {
+        "behaviorPack": "./packs/BP",
+        "resourcePack": "./packs/RP"
+    },
+    "regolith": {
+        "profiles": {
+            "export": {
+                "filters": [
+                    {
+                        "filter": "bump_manifest"
+                    }
+                ],
+                "export": {
+                    "target": "development",
+                    "readOnly": false
+                },
+                "dataPath": "./packs/data"
+            },
+            "dev": {
+                "filters": [
+                    {
+                        "runWith": "python",
+                        "script": "../bump_manifest.py"
+                    }
+                ],
+                "export": {
+                    "target": "local",
+                    "readOnly": false
+                },
+                "dataPath": "./packs/data"
+            }
+        }
+    }
+}
