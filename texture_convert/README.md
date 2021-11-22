@@ -23,6 +23,8 @@ This filter will check the project for any `.xcf` files, and will convert them i
 
 This allows you to use `.xcf` files directly inside of your addon, without converting them manually whenever you make a change.
 
+NOTE: .xcf files are handled with limited transparency support. it's recommended to export as .psd from gimp.
+
 ## Using the Filter
 
 ```json
