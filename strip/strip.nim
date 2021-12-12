@@ -17,9 +17,11 @@ for file in walkDirRec os.getCurrentDir():
             if line.startsWith("##") == false and line != "":
                 newF = newF & newL & "\n"
         file.writeFile(newF)
+        echo "formatted " & file.splitFile().name & ".lang"
     if file.match re".*\.mcfunction":
         for line in file.readFile().splitLines():
             newL = line
             if line.startsWith("#") == false and line != "":
                 newF = newF & newL & "\n"
         file.writeFile(newF)
+        echo "formatted " & file.splitFile().name & ".mcfunction"
