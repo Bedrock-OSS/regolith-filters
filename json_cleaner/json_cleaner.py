@@ -5,11 +5,11 @@ def get_json_from_file(fh):
 
     try:
         # If possible, read the file as JSON
-        json_data = json.load(fh)
+        return json.loads(fh)
     except:
         # If not, read the file as a string, and try to parse it as JSON
         contents = ""
-        for line in fh:
+        for line in fh.splitlines():
             cleanedLine = line.split("//", 1)[0]
             if len(cleanedLine) > 0 and line.endswith("\n") and "\n" not in cleanedLine:
                 cleanedLine += "\n"
@@ -20,9 +20,9 @@ def get_json_from_file(fh):
         return json.loads(contents)
 
 def main():
-    for file in glob.glob("**/*.json"):
+    for file in glob.glob("**/*.json", recursive=True):
         with open(file, "r") as fh:
-            json_data = get_json_from_file(fh)
+            json_data = get_json_from_file(fh.read())
         
         with open(file, "w") as fh:
             json.dump(json_data, fh, indent=2)
