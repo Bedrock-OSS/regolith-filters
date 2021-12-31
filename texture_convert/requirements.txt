@@ -1,0 +1,2 @@
+gimpformats==2021.1.1
+psd_tools==1.9.18

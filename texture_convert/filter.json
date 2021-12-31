@@ -1,0 +1,7 @@
+{
+    "filters": [{
+        "runWith": "python",
+        "script": "./texture_convert.py",
+        "name": "texture_convert"
+    }]
+}
