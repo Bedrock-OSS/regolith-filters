@@ -1,0 +1,9 @@
+{
+    "filters": [
+        {
+            "runWith": "python",
+            "script": "./main.py",
+            "name": "Comparing generated files with expected results"
+        }
+    ]
+}
