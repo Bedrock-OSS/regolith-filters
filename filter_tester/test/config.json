@@ -1,0 +1,28 @@
+{
+	"name": "filter_tester example",
+	"author": "Bedrock-OSS",
+	"packs": {
+		"behaviorPack": "./packs/BP",
+		"resourcePack": "./packs/RP"
+	},
+	"regolith": {
+		"profiles": {
+			"dev": {
+				"filters": [
+					{
+						"runWith": "python",
+						"script": "../main.py",
+						"settings": {
+							"errors_stop_execution": true
+						}
+					}
+				],
+				"export": {
+					"target": "local",
+					"readOnly": true
+				},
+				"dataPath": "./data"
+			}
+		}
+	}
+}
