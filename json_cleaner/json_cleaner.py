@@ -20,11 +20,13 @@ def get_json_from_file(fh):
         return json.loads(contents)
 
 def main():
-    for file in glob.glob("**/*.json", recursive=True):
-        with open(file, "r") as fh:
-            json_data = get_json_from_file(fh.read())
-        
-        with open(file, "w") as fh:
-            json.dump(json_data, fh, indent=2)
+    folders = ('BP', 'RP')
+    for folder in folders:
+        for file in glob.glob(folder + "/**/*.json", recursive=True):
+            with open(file, "r") as fh:
+                json_data = get_json_from_file(fh.read())
+            
+            with open(file, "w") as fh:
+                json.dump(json_data, fh, indent=2)
 
 main()
