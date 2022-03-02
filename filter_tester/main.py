@@ -124,7 +124,6 @@ def main(errors_stop_execution: bool):
                     errors.append(FilterTesterException(
                         f"File mismatch at {file.as_posix()}:" + str(e)))
             except Exception as e:  # Compare files like binary files
-                raise Exception() from e
                 compare_binary_files(file)
         else:
             compare_binary_files(file)

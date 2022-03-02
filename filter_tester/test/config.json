@@ -10,19 +10,24 @@
 			"dev": {
 				"filters": [
 					{
-						"runWith": "python",
-						"script": "../main.py",
+						"filter": "filter_tester",
 						"settings": {
 							"errors_stop_execution": true
 						}
 					}
 				],
 				"export": {
-					"target": "local",
-					"readOnly": true
-				},
-				"dataPath": "./data"
+					"target": "development",
+					"readOnly": false
+				}
 			}
-		}
+		},
+		"filterDefinitions": {
+			"filter_tester": {
+				"runWith": "python",
+				"script": "../main.py"
+			}
+		},
+		"dataPath": "./data"
 	}
 }
