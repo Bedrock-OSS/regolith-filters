@@ -1,0 +1,10 @@
+{
+    "description": "Formats json and strips comments from .json, .lang and .mcfunction files",
+    "filters": [
+        {
+            "runWith": "nim",
+            "script": "./strip.nim",
+            "name": "strip"
+        }
+    ]
+}
