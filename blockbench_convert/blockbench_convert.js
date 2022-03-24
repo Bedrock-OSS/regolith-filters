@@ -9,11 +9,46 @@ glob("RP/models/**/*.bbmodel", null, function (er, files) {
       fs.writeFileSync(
         resultName,
         exportModel(JSON.parse(data))
-      );
+        );
       fs.unlinkSync(file);
     });
   });
 });
+
+glob("RP/models/**/*.entity.bbmodel", null, function (er, files) {
+  files.forEach(function (file) {
+    fs.readFile(file, "utf8", function (err, data) {
+      let resultName = file.substr(0, file.lastIndexOf(".")) + ".png";
+      console.log("Converting " + file + " into " + resultName);
+      exportTexture(JSON.parse(data), "entity");
+    });
+  });
+});
+
+glob("RP/models/**/*.block.bbmodel", null, function (er, files) {
+  files.forEach(function (file) {
+    fs.readFile(file, "utf8", function (err, data) {
+      let resultName = file.substr(0, file.lastIndexOf(".")) + ".png";
+      console.log("Converting " + file + " into " + resultName);
+      exportTexture(JSON.parse(data), "blocks");
+    });
+  });
+});
+
+function exportTexture(data, mType) {
+  try {
+    for (let t = 0; t < data["textures"].length; t++) {
+      let textureName = data["textures"][t]["name"];
+      let textureData = data["textures"][t]["source"].replace("data:image/png;base64,", "");
+      if (fs.existsSync("RP/textures/" + mType + "/") == false) {
+        fs.mkdirSync("RP/textures/" + mType + "/");
+      }
+      fs.writeFileSync("RP/textures/" + mType + "/" + textureName + ".png", textureData, "base64");
+  }
+} catch {
+    console.log("No textures found");
+  }
+}
 
 // From: https://github.com/bridge-core/editor/blob/main/src/components/ImportFile/BBModel.ts
 
