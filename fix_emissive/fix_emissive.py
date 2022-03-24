@@ -15,5 +15,5 @@ def fix(input_img, output_img):
     img.save(output_img)
 
 
-for texture in glob.glob("./RP/textures/**/*.png"):
+for texture in glob.glob("./RP/textures/**/*.png", recursive=True):
     fix(texture, texture)
