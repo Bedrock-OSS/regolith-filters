@@ -1,4 +1,5 @@
 const glob = require("glob");
+const path = require("path")
 const fs = require("fs");
 
 glob("RP/models/**/*.bbmodel", null, function (er, files) {
@@ -18,7 +19,7 @@ glob("RP/models/**/*.bbmodel", null, function (er, files) {
 glob("RP/models/**/*.entity.bbmodel", null, function (er, files) {
   files.forEach(function (file) {
     fs.readFile(file, "utf8", function (err, data) {
-      let resultName = file.substr(0, file.lastIndexOf(".")) + ".png";
+      let resultName = "RP/textures/entity/" + path.basename(file).split(".entity")[0] + ".png";
       console.log("Converting " + file + " into " + resultName);
       exportTexture(JSON.parse(data), "entity");
     });
@@ -28,7 +29,7 @@ glob("RP/models/**/*.entity.bbmodel", null, function (er, files) {
 glob("RP/models/**/*.block.bbmodel", null, function (er, files) {
   files.forEach(function (file) {
     fs.readFile(file, "utf8", function (err, data) {
-      let resultName = file.substr(0, file.lastIndexOf(".")) + ".png";
+      let resultName = "RP/textures/entity/" + path.basename(file).split(".entity")[0] + ".png";
       console.log("Converting " + file + " into " + resultName);
       exportTexture(JSON.parse(data), "blocks");
     });
@@ -41,7 +42,7 @@ function exportTexture(data, mType) {
       let textureName = data["textures"][t]["name"];
       let textureData = data["textures"][t]["source"].replace("data:image/png;base64,", "");
       if (fs.existsSync("RP/textures/" + mType + "/") == false) {
-        fs.mkdirSync("RP/textures/" + mType + "/");
+        fs.mkdirSync("RP/textures/" + mType + "/", { recursive: true });
       }
       fs.writeFileSync("RP/textures/" + mType + "/" + textureName + ".png", textureData, "base64");
   }
