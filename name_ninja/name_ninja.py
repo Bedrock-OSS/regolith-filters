@@ -1,14 +1,85 @@
 """
 This filter is used to automatically generate entity, block, and item names,
 based on a custom 'name' field, or automatically generated based on the entities
-identifier.
+identifier. See 'readme.md' for more information.
 """
 
 import sys
 import json
 from typing import List
+from enum import Enum
 
 from reticulator import *
+
+class AssetType(Enum):
+    SPAWN_EGG = 1
+    ITEM = 2
+    BLOCK = 3
+    ENTITY = 4
+
+# TODO: Consider moving this into Reticulator
+class FormatVersion():
+    def __init__(self, version: str) -> None:
+        elements = version.split('.')
+
+        # Pack with extra data if it's missing
+        for i in range(3 - len(elements)):
+            elements.append('0')
+        
+        self.major = int(elements[0])
+        self.minor = int(elements[1])
+        self.patch = int(elements[2])
+
+    def __repr__(self) -> str:
+        return f'{self.major}.{self.minor}.{self.patch}'
+        
+    def __eq__(self, other):
+        return self.major == self.major and self.minor == self.minor and self.patch == self.patch
+
+    def __gt__(self, other):
+        if self.major > other.major:
+            return True
+        elif self.major < other.major:
+            return False
+
+        if self.minor > other.minor:
+            return True
+        elif self.minor < other.minor:
+            return False
+
+        if self.patch > other.patch:
+            return True
+        elif self.patch < other.patch:
+            return False
+        
+        return self != other
+
+def generate_localization_key(asset_type: AssetType, asset: JsonResource):
+    """
+    Generates the localization key for the asset type. May depend on format version,
+    or other things.
+    """
+
+    # All assets that we are generating names for have a 'identifier' key.
+    identifier = asset.identifier
+
+    if asset_type == AssetType.SPAWN_EGG:
+        key = "entity.identifier.name"
+    elif asset_type == AssetType.ITEM:
+        # TODO: What should happen if 1.16.100 items have DisplayName component?
+
+        # Handle the different formats for items
+        if FormatVersion(asset.get_jsonpath('format_version')) < FormatVersion('1.16.100'):
+            key = "item.identifier.name"
+        else:
+            key = "item.identifier"
+    elif asset_type == AssetType.BLOCK:
+        key = "tile.identifier.name"
+    elif asset_type == AssetType.ENTITY:
+        key = "item.spawn_egg.entity.identifier.name"
+
+    # Finally, do the replacement and return
+    return key.replace("identifier", identifier)
 
 def format_name(name: str):
     """
@@ -16,7 +87,7 @@ def format_name(name: str):
     """
     return name.split(":")[1].replace("_", " ").title()
 
-def gather_translations(assets: List[JsonFileResource], settings: dict, name_jsonpath: str, localization_key_format: str, remove_field: bool) -> List[Translation]:
+def gather_translations(asset_type: str, assets: List[JsonFileResource], settings: dict, name_jsonpath: str, ignored_namespaces) -> List[Translation]:
     """
     Gathers translations from the behavior pack.
     """
@@ -27,25 +98,38 @@ def gather_translations(assets: List[JsonFileResource], settings: dict, name_jso
     translations : List[Translation] = []
 
     for asset in assets:
-        # A little bit of magic here: All assets are expected to have an identifier
-        identifier = asset.identifier
-        localization_key = localization_key_format.replace("identifier", identifier)
-
         try:
-            if remove_field:
-                name = asset.pop_value_at(name_jsonpath)
-            else:
-                name = asset.get_value_at(name_jsonpath)
-        except KeyError:
+            identifier = asset.identifier
+        except AssetNotFoundError:
+            print(f"Warning: {asset.file_path} has no identifier, skipping...")
+            continue
+
+        # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
+        if identifier.split(':')[0] in ignored_namespaces:
+            continue
+        
+        localization_key = generate_localization_key(asset_type, asset)
+
+        # Allow for generate_localization_key to return None (skip)
+        if localization_key is None:
+            continue
+
+        # Try/except to handle the case where the asset doesn't have a name.
+        # If this happens, we optionally name the entity automatically.
+        try:
+            # Since we process spawn_eggs before entities, we should ensure that spawn_eggs don't delete the name key
+            localization_value = asset.pop_jsonpath(name_jsonpath)
+            if asset_type == AssetType.SPAWN_EGG:
+                asset.delete_jsonpath(name_jsonpath)
+        except AssetNotFoundError:
             if auto_name:
-                name = prefix + format_name(identifier) + postfix
+                localization_value = prefix + format_name(identifier) + postfix
             else:
                 continue
         
-        translations.append(Translation(localization_key, name, "Generated via Regolith."))
+        translations.append(Translation(localization_key, localization_value, ""))
     
     return translations
-
 
 def main():
     """
@@ -54,22 +138,24 @@ def main():
     try:
         settings = json.loads(sys.argv[1])
     except IndexError:
+        print("Warning: No settings provided. Using default settings.")
         settings = {}
 
+    # Detect settings, and set defaults if not provided.
     overwrite = settings.get("overwrite", False)
     language = settings.get("language", "en_US.lang")
     sort = settings.get("sort", False)
-
+    ignored_namespaces = settings.get("ignored_namespaces", ['minecraft'])
     project = Project("./BP", "./RP")
     behavior_pack = project.behavior_pack
     resource_pack = project.resource_pack
 
     translations = []
 
-    translations.extend(gather_translations(behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", "entity.identifier.name", False))
-    translations.extend(gather_translations(behavior_pack.items, settings.get("items", {}), "minecraft:item/description/name", "item.identifier", True))
-    translations.extend(gather_translations(behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", "tile.identifier.name", True))
-    translations.extend(gather_translations(behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", "item.spawn_egg.entity.identifier.name", True))
+    translations.extend(gather_translations(AssetType.SPAWN_EGG, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.ITEM, behavior_pack.items, settings.get("items", {}), "minecraft:item/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.BLOCK, behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", ignored_namespaces))
 
     try:
         language_file = resource_pack.get_language_file(language)

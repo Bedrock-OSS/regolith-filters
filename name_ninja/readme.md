@@ -49,6 +49,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 		"language": "en_GB.lang",
 		"overwrite": true,
 		"sort": true,
+		"ignored_identifiers": ['minecraft'],
 		"entities": {
 			"auto_name": true,
 			"prefix": "§1",
@@ -78,9 +79,9 @@ Here is a filter, with all options fully defined. These options will be explaine
 | language  | en_US.lang | The language file where you want to place the translations.                                         |
 | overwrite | False      | Whether languages codes should overwrite/replace translations already defined in the language file. |
 | sort      | False      | Whether to sort the language file, on export. Useful for grouping assets.                           |
+| ignored_namespaces | ['minecraft'] | A list of namespaces which you would like to ignore. |
 
 As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs` are always the same. The approach simply gives you more flexibility per asset-type.
-
 
 | Property  | Default | Description                                                                                                                                 |
 |-----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------|
@@ -88,4 +89,11 @@ As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs`
 | prefix    | ""      | A prefix that is appended to the start of the translation. Useful for giving color codes to your names.                                     |
 | postfix   | ""      | A postfix that is appended to the end of the translation. Useful for resetting color codes from your names.                                 |
 
+# Changelog
+
+### 1.0.0
+
+The first release of Name Ninja
+
+### 1.1.0
 
