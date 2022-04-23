@@ -26,10 +26,14 @@ An example project for this filter is contained within the `tests` folder of thi
 
 # Changelog
 
-### 1.0.0
+## 1.0.0
 
 The first release of `texture_list`.
 
-### 1.1.0
+## 1.1.0
 
  - Adds support for [subpacks](https://wiki.bedrock.dev/concepts/subpacks.html#top).
+
+### 1.1.1
+
+ - Fixes issues where resource packs without `subpack` folder would crash during compilation.

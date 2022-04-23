@@ -10,9 +10,10 @@ def fetch_subpack_folders():
     """
     Fetches a list of all subpack folders in the resource-pack.
     """
-    for subpack_folder in SUBPACK_PATH.iterdir():
-        if subpack_folder.is_dir():
-            yield subpack_folder
+    if SUBPACK_PATH.exists():
+        for subpack_folder in SUBPACK_PATH.iterdir():
+            if subpack_folder.is_dir():
+                yield subpack_folder
 
 def list_textures(root_folder: Path):
     """
