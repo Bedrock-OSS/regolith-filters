@@ -6,32 +6,25 @@
 		"resourcePack": "./packs/RP"
 	},
 	"regolith": {
+		"dataPath": "./packs/data",
 		"profiles": {
-			"dev": {
+			"test": {
 				"unsafe": false,
 				"filters": [
 					{
-						"filter": "texture_list"
+						"filter": "local_texture_list"
 					}
 				],
 				"export": {
 					"target": "local"
-				},
-				"dataPath": "./packs/data"
-			},
-			"local": {
-				"unsafe": false,
-				"filters": [
-					{
-						"runWith": "python",
-						"script": "../texture_list.py"
-					}
-				],
-				"export": {
-					"target": "local"
-				},
-				"dataPath": "./packs/data"
+				}
 			}
-		}
+		},
+		"filterDefinitions": {
+            "local_texture_list": {
+                "runWith": "python",
+                "script": "../texture_list.py"
+            }
+        }
 	}
 }
