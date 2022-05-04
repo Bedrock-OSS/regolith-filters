@@ -23,10 +23,15 @@ def main():
     folders = ('BP', 'RP')
     for folder in folders:
         for file in glob.glob(folder + "/**/*.json", recursive=True):
-            with open(file, "r") as fh:
-                json_data = get_json_from_file(fh.read())
-            
-            with open(file, "w") as fh:
-                json.dump(json_data, fh, indent=2)
+            try:
+                with open(file, "r", encoding="utf-8") as fh:
+                    json_data = get_json_from_file(fh.read())
+                
+                with open(file, "w") as fh:
+                    json.dump(json_data, fh, indent=2, ensure_ascii=False)
+            except Exception as e:
+                print("Error in file: " + file)
+                print(e)
+                raise
 
 main()
