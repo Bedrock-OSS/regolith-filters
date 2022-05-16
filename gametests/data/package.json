@@ -1,0 +1,27 @@
+{
+  "name": "example-gametest",
+  "version": "0.0.1",
+  "description": "Example of a GameTest module",
+  "main": "main.js",
+  "scripts": {
+    "build": "node build.js",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint -c eslint.json --ext .ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mojang-gametest": "^0.1.4",
+    "@types/mojang-minecraft": "^0.1.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "esbuild": "^0.14.11",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "json5": "^2.2.1",
+    "prettier": "^2.3.2",
+    "typescript": "^4.4.2",
+    "glob": "^7.2.0"
+  }
+}
