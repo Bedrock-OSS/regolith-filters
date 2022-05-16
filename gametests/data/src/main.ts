@@ -6,7 +6,7 @@ world.events.tick.subscribe((tick_event) => {
     let should_trigger = tick_event.currentTick % 100 == 0;
     let player_count = [...world.getPlayers()].length;
     if (should_trigger && player_count > 0) {
-        let seconds = tick_event.currentTick % 20;
+        let seconds = tick_event.currentTick / 20;
         world
             .getDimension("overworld")
             .runCommand(`tellraw @a {"rawtext":[{"text":"It has been ${seconds} seconds"}]}`);

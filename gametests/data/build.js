@@ -26,7 +26,8 @@ const json5Plugin = options => {
     }
 }
 
-const buildOptions = {...JSON.parse(process.env.settings), plugins: [json5Plugin()]};
+const settings = JSON.parse(process.env.settings);
+const buildOptions = {...settings.buildOptions, plugins: [json5Plugin()]};
 
 require("esbuild")
     .build(buildOptions)

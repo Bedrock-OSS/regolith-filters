@@ -11,8 +11,8 @@ const defSettings = {
   moduleUUID: randomUUID(),
   buildOptions: {
     external: ["mojang-minecraft", "mojang-minecraft-ui", "mojang-gametest"],
-    entryPoints: ["src/index.ts"],
-    outfile: "../../BP/scripts/index.js",
+    entryPoints: ["src/main.ts"],
+    outfile: "../../BP/scripts/main.js",
     target: "es2020",
     format: "esm",
     bundle: true,
