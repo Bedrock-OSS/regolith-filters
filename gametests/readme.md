@@ -6,7 +6,7 @@ The advantage of using this specific filter is that without running this filter,
 
 ## Getting the Filter
 
-Install with: `regolith install gametests`. 
+Install with: `regolith install gametests`. After that, you can place the filter into one of your profiles.
 
 ```json
 {
@@ -26,10 +26,6 @@ Install with: `regolith install gametests`.
     }
 }
 ```
-
-After getting the filter, you need to also execute `npm install` inside the data directory to get the required dependencies.
-
-After that, you can place the filter into one of your profiles.
 
 ## Documentation
 
