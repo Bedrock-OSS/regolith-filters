@@ -13,8 +13,6 @@ Install with: `regolith install gametests`.
     "filter": "gametests",
     // Following settings are set by default
     "settings": {
-        "removeGlob": "",
-        "ignoreGlob": [],
         "moduleUUID": null,
         "buildOptions": {
             "external": ["mojang-minecraft", "mojang-minecraft-ui", "mojang-gametest"],
@@ -43,6 +41,26 @@ This filter will:
 
 The filter also has included support for importing JSON files using JSON5 parser.
 
+## Settings
+
+| Setting        | Type                                                     | Default                                                | Description                                                         |
+| -------------- | -------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [defBuildOpts](#default-build-options)                 | Specifies build options for esbuild                                 |
+| `moduleUUID`   | string                                                   | A randomly generated UUID each time the filter is ran. | Removes all files matching the glob path after building             |
+
+#### Default Build Options
+
+```js
+{
+    external: ["mojang-minecraft", "mojang-minecraft-ui", "mojang-gametest"],
+    entryPoints: ["src/main.ts"],
+    outfile: "../../BP/scripts/main.js",
+    target: "es2020",
+    format: "esm",
+    bundle: true,
+    minify: true
+}
+```
 
 ## Changelog
 

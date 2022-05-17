@@ -1,8 +1,8 @@
 const json5 = require('json5');
 const path = require('path');
 const fs = require('fs');
-const glob = require('glob');
 
+// A simple esbuild plugin, that converts JSON5 to JSON before passing it to esbuild.
 const json5Plugin = options => {
     return {
         name: 'json5',
@@ -31,21 +31,6 @@ const buildOptions = {...settings.buildOptions, plugins: [json5Plugin()]};
 
 require("esbuild")
     .build(buildOptions)
-    .then(() => {
-        if (settings.removeGlob) {
-            glob(
-                settings.removeGlob,
-                {
-                    ignore: settings.ignoreGlob,
-                },
-                (err, matches) => {
-                    matches.forEach((v) =>
-                        fs.rmSync(v, { recursive: true, force: true })
-                    );
-                }
-            );
-        }
-    })
     .catch((err) => {
         console.error(err.message);
         process.exit(1);

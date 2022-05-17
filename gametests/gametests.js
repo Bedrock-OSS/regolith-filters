@@ -6,8 +6,6 @@ const { randomUUID } = require("crypto");
 const DIRECTORY = "data/gametests/";
 
 const defSettings = {
-  removeGlob: "",
-  ignoreGlob: [],
   moduleUUID: randomUUID(),
   buildOptions: {
     external: ["mojang-minecraft", "mojang-minecraft-ui", "mojang-gametest"],
