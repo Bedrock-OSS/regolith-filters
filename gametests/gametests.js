@@ -23,8 +23,6 @@ const settings = Object.assign(
 );
 
 const typeMap = {
-  removeGlob: "string",
-  ignoreGlob: "array",
   buildOptions: "object",
   moduleUUID: "string",
 };
