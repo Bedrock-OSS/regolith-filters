@@ -23,7 +23,7 @@ const settings = Object.assign(
   process.argv[2] ? JSON.parse(process.argv[2]) : {}
 );
 settings.buildOptions = Object.assign(defSettings.buildOptions, settings.buildOptions);
-settings.buildOptions.outfile = settings.out;
+settings.buildOptions.outfile = "../../BP/" + settings.out;
 settings.buildOptions.external.push(...settings.modules);
 
 const typeMap = {
