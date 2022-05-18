@@ -29,6 +29,8 @@ settings.buildOptions.external.push(...settings.modules);
 const typeMap = {
   buildOptions: "object",
   moduleUUID: "string",
+  modules: "array",
+  outfile: "string"
 };
 const throwTypeError = (k) => {
   throw new TypeError(
