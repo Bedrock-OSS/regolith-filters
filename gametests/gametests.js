@@ -7,10 +7,11 @@ const DIRECTORY = "data/gametests/";
 
 const defSettings = {
   moduleUUID: randomUUID(),
+  modules: ["mojang-gametest", "mojang-minecraft"],
+  outfile: "scripts/main.js",
   buildOptions: {
-    external: ["mojang-minecraft", "mojang-minecraft-ui", "mojang-gametest"],
     entryPoints: ["src/main.ts"],
-    outfile: "../../BP/scripts/main.js",
+    external: [],
     target: "es2020",
     format: "esm",
     bundle: true,
@@ -21,6 +22,9 @@ const settings = Object.assign(
   defSettings,
   process.argv[2] ? JSON.parse(process.argv[2]) : {}
 );
+settings.buildOptions = Object.assign(defSettings.buildOptions, settings.buildOptions);
+settings.buildOptions.outfile = settings.out;
+settings.buildOptions.external.push(...settings.modules);
 
 const typeMap = {
   buildOptions: "object",
@@ -90,14 +94,35 @@ manifest = JSON.parse(manifest);
 if (!manifest.dependencies) {
   manifest.dependencies = [];
 }
-manifest.dependencies.push({
-  "uuid": "b26a4d4c-afdf-4690-88f8-931846312678",
-  "version": [0, 1, 0]
-})
-manifest.dependencies.push({
-  "uuid": "6f4b6893-1bb6-42fd-b458-7fa3d0c89616",
-  "version": [0, 1, 0]
-})
+const MODULEINFO = {
+  'mojang-gametest': {
+    "description": "mojang-gametest",
+    "uuid": "6f4b6893-1bb6-42fd-b458-7fa3d0c89616",
+    "version": [0, 1, 0]
+  },
+  'mojang-minecraft': {
+    "description": "mojang-minecraft",
+    "uuid": "b26a4d4c-afdf-4690-88f8-931846312678",
+    "version": [0, 1, 0]
+  },
+  'mojang-minecraft-ui': {
+    "description": "mojang-minecraft-ui",
+    "uuid": "2bd50a27-ab5f-4f40-a596-3641627c635e",
+    "version": [0, 1, 0]
+  },
+  'mojang-net': {
+    "description": "mojang-net",
+    "uuid": "777b1798-13a6-401c-9cba-0cf17e31a81b",
+    "version": [ 0, 1, 0 ]
+  }
+}
+for (let module of settings.modules) {
+  if (!Object.keys(MODULEINFO).includes(module)) {
+    console.log(`Unknown gametest module provided "${module}"`);
+    process.exit(1);
+  }
+  manifest.dependencies.push(MODULEINFO[module]);
+}
 
 // GameTests module
 if (!manifest.modules) {
@@ -109,7 +134,7 @@ manifest.modules.push(
   "type": "javascript",
   "uuid": settings.moduleUUID,
   "version": [0, 0, 1],
-  "entry": "scripts/main.js"
+  "entry": settings.outfile
 });
 
 console.log("Saving manifest.json");
