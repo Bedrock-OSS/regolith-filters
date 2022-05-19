@@ -116,6 +116,11 @@ const MODULEINFO = {
     "description": "mojang-net",
     "uuid": "777b1798-13a6-401c-9cba-0cf17e31a81b",
     "version": [ 0, 1, 0 ]
+  },
+  "mojang-minecraft-server-admin": {
+    "description": "mojang-minecraft-server-admin",
+    "uuid": "53d7f2bf-bf9c-49c4-ad1f-7c803d947920",
+    "version": [ 0, 1, 0 ]
   }
 }
 for (let module of settings.modules) {
