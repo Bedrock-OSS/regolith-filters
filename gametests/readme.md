@@ -63,9 +63,9 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ### 1.0.1
 
- - Added `outfile` setting, used to determine where the resulting build file will be located #33
- - Added `modules` setting to choose which gametest modules to inject into the manifest dependencies, as well as which to allow during building #33
- - customizing `buildOptions` will now overwrite each individual property, rather than overwriting `buildOptions` as a whole. This allows for use cases where a user may not want to entirely overwrite the `buildOptions` #33
+ - Added `outfile` setting, used to determine where the resulting build file will be located [#33](https://github.com/Bedrock-OSS/regolith-filters/pull/33)
+ - Added `modules` setting to choose which gametest modules to inject into the manifest dependencies, as well as which to allow during building [#33](https://github.com/Bedrock-OSS/regolith-filters/pull/33)
+ - customizing `buildOptions` will now overwrite each individual property, rather than overwriting `buildOptions` as a whole. This allows for use cases where a user may not want to entirely overwrite the `buildOptions` [#33](https://github.com/Bedrock-OSS/regolith-filters/pull/33)
 
 ### 1.0.0
 
