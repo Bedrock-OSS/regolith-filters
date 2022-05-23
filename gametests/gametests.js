@@ -19,11 +19,12 @@ const defSettings = {
   },
 };
 const settings = Object.assign(
+  {},
   defSettings,
   process.argv[2] ? JSON.parse(process.argv[2]) : {}
 );
-settings.buildOptions = Object.assign(defSettings.buildOptions, settings.buildOptions);
-settings.buildOptions.outfile = "../../BP/" + settings.out;
+settings.buildOptions = Object.assign({}, defSettings.buildOptions, settings.buildOptions);
+settings.buildOptions.outfile = "../../BP/" + settings.outfile;
 settings.buildOptions.external.push(...settings.modules);
 
 const typeMap = {
