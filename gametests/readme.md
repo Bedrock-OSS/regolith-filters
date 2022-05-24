@@ -61,6 +61,11 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.0.2
+
+ - Fixed `settings.buildOptions.outfile` referencing the invalid setting `settings.out`, now references `settings.outfile` instead [#35](https://github.com/Bedrock-OSS/regolith-filters/pull/35)
+ - `settings.buildOptions` should now properly merge with defaults rather than entirely replacing them [#35](https://github.com/Bedrock-OSS/regolith-filters/pull/35)
+
 ### 1.0.1
 
  - Added `outfile` setting, used to determine where the resulting build file will be located [#33](https://github.com/Bedrock-OSS/regolith-filters/pull/33)
