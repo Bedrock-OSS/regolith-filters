@@ -61,6 +61,10 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.0.3
+
+ - Added `settings.moduleType` option to specify the type of module (`javascript` before 1.19 and `script` after 1.19, `javascript` by default)
+
 ### 1.0.2
 
  - Fixed `settings.buildOptions.outfile` referencing the invalid setting `settings.out`, now references `settings.outfile` instead [#35](https://github.com/Bedrock-OSS/regolith-filters/pull/35)

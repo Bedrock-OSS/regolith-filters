@@ -9,6 +9,7 @@ const defSettings = {
   moduleUUID: randomUUID(),
   modules: ["mojang-gametest", "mojang-minecraft"],
   outfile: "scripts/main.js",
+  moduleType: "javascript",
   buildOptions: {
     entryPoints: ["src/main.ts"],
     external: [],
@@ -31,7 +32,8 @@ const typeMap = {
   buildOptions: "object",
   moduleUUID: "string",
   modules: "array",
-  outfile: "string"
+  outfile: "string",
+  moduleType: "string"
 };
 const throwTypeError = (k) => {
   throw new TypeError(
@@ -139,7 +141,7 @@ if (!manifest.modules) {
 manifest.modules.push(
 {
   "description": "GameTests module",
-  "type": "javascript",
+  "type": settings.moduleType,
   "uuid": settings.moduleUUID,
   "version": [0, 0, 1],
   "entry": settings.outfile
