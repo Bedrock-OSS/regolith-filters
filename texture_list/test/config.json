@@ -9,7 +9,6 @@
 		"dataPath": "./packs/data",
 		"profiles": {
 			"test": {
-				"unsafe": false,
 				"filters": [
 					{
 						"filter": "local_texture_list"

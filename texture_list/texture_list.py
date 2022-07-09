@@ -12,7 +12,7 @@ def fetch_subpack_folders():
     """
     if SUBPACK_PATH.exists():
         for subpack_folder in SUBPACK_PATH.iterdir():
-            if subpack_folder.is_dir():
+            if subpack_folder.is_dir() and (subpack_folder / "textures").exists():
                 yield subpack_folder
 
 def list_textures(root_folder: Path):

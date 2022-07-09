@@ -37,3 +37,7 @@ The first release of `texture_list`.
 ### 1.1.1
 
  - Fixes issues where resource packs without `subpack` folder would crash during compilation.
+
+### 1.1.2
+
+ - Fixes issue where subpacks without a 'texture' folder would crash.
