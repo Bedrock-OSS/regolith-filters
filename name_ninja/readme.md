@@ -1,6 +1,6 @@
 # Name Ninja
 
-This filter is used to automatically generate entity, block, spawn egg, and item names, based on a custom 'name' field, or automatically generated based on the entities identifier.
+This filter is used to automatically generate entity, block, spawn egg, and item names, based on a custom 'name' field, or on the entities identifier.
 
 Simply add a `name` field into the description of a file:
 
