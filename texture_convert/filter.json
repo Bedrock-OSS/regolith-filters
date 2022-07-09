@@ -1,7 +1,10 @@
 {
-    "filters": [{
-        "runWith": "python",
-        "script": "./texture_convert.py",
-        "name": "texture_convert"
-    }]
+    "description": "Converts popular image editor file formats, such as .psd to .png.",
+    "filters": [
+        {
+            "runWith": "python",
+            "script": "./texture_convert.py",
+            "name": "texture_convert"
+        }
+    ]
 }

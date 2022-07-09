@@ -1,4 +1,5 @@
 {
+    "description": "Automatically generates entity, block, spawn egg, and item names, based on a custom 'name' field, or on the entities identifier.",
     "filters": [
         {
             "runWith": "python",
