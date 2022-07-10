@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const json5 = require("json5");
 
 // A simple esbuild plugin, that converts JSON5 to JSON before passing it to esbuild.
@@ -25,11 +26,11 @@ const json5Plugin = (options) => {
   };
 };
 
-export function run(settings) {
+module.exports.run = function (settings) {
   require("esbuild")
     .build({ ...settings.buildOptions, plugins: [json5Plugin()] })
     .catch((err) => {
       console.error(err.message);
       process.exit(1);
     });
-}
+};
