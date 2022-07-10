@@ -6,6 +6,5 @@
 			"runWith": "nodejs",
 			"script": "./gametests.js"
 		}
-	],
-	"version": "1.0.4"
+	]
 }
