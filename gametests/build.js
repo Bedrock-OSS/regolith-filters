@@ -25,9 +25,11 @@ const json5Plugin = (options) => {
   };
 };
 
-require("esbuild")
-  .build({ ...settings.buildOptions, plugins: [json5Plugin()] })
-  .catch((err) => {
-    console.error(err.message);
-    process.exit(1);
-  });
+export function run(settings) {
+  require("esbuild")
+    .build({ ...settings.buildOptions, plugins: [json5Plugin()] })
+    .catch((err) => {
+      console.error(err.message);
+      process.exit(1);
+    });
+}

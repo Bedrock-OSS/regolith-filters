@@ -6,6 +6,7 @@ const defSettings = {
   modules: ["mojang-gametest", "mojang-minecraft"],
   outfile: "BP/scripts/main.js",
   moduleType: "script",
+  manifest: "BP/manifest.json",
   buildOptions: {
     entryPoints: ["data/gametests/src/main.ts"],
     external: [],
@@ -110,4 +111,4 @@ console.log("Saving manifest.json");
 fs.writeFileSync(settings.manifest, JSON.stringify(manifest, null, 4));
 
 require("./moveFiles.js");
-require("./build.js");
+require("./build.js").run(settings);

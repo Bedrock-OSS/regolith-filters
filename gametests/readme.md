@@ -16,8 +16,9 @@ Install with: `regolith install gametests`. After that, you can place the filter
     "moduleUUID": null,
     "modules": ["mojang-gametest", "mojang-minecraft"],
     "outfile": "BP/scripts/main.js",
+    "manifest": "BP/manifest.json",
     "buildOptions": {
-      "entryPoints": ["BP/src/main.ts"],
+      "entryPoints": ["data/gametests/main.ts"],
       "target": "es2020",
       "format": "esm",
       "bundle": true,
