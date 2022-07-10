@@ -1,5 +1,5 @@
 {
-    "description": "Compiles gametests into behavior pack.",
+    "description": "Compiles gametests into pack.",
     "filters": [
         {
             "runWith": "nodejs",

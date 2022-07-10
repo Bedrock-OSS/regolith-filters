@@ -15,9 +15,9 @@ Install with: `regolith install gametests`. After that, you can place the filter
   "settings": {
     "moduleUUID": null,
     "modules": ["mojang-gametest", "mojang-minecraft"],
-    "outfile": "scripts/main.js",
+    "outfile": "BP/scripts/main.js",
     "buildOptions": {
-      "entryPoints": ["src/main.ts"],
+      "entryPoints": ["BP/src/main.ts"],
       "target": "es2020",
       "format": "esm",
       "bundle": true,
@@ -45,7 +45,7 @@ The filter also has included support for importing JSON files using JSON5 parser
 | `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [defBuildOpts](#default-build-options)                 | Specifies build options for esbuild            |
 | `moduleUUID`   | string                                                   | A randomly generated UUID each time the filter is ran. | The UUID to place inside the manifest module   |
 | `modules`      | string[]                                                 | ["mojang-gametest", "mojang-minecraft"]                | The gametest modules to inject as dependencies |
-| `outfile`      | string                                                   | "scripts/main.js"                                      | The path to place the built script file at     |
+| `outfile`      | string                                                   | "BP/scripts/main.js"                                      | The path to place the built script file at     |
 
 #### Default Build Options
 
