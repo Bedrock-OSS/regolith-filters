@@ -1,10 +1,10 @@
 {
-  "name": "post-install",
+  "name": "gametests",
   "version": "0.0.1",
-  "description": "A simple package to run npm install in the data folder",
-  "scripts": {
-    "postinstall": "npm --prefix ../../../../packs/data/gametests install"
-  },
+  "description": "",
+  "scripts": {},
   "dependencies": {
+    "esbuild": "^0.14.48",
+    "json5": "^2.2.1"
   }
 }

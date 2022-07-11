@@ -1,10 +1,10 @@
 {
-    "description": "Compiles gametests into behavior pack.",
-    "filters": [
-        {
-            "runWith": "nodejs",
-            "script": "./gametests.js",
-            "name": "Compiling gametests"
-        }
-    ]
+	"description": "Compiles gametests into pack.",
+	"filters": [
+		{
+			"name": "Compiling gametests",
+			"runWith": "nodejs",
+			"script": "./gametests.js"
+		}
+	]
 }
