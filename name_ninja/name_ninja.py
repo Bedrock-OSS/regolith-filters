@@ -34,7 +34,7 @@ class FormatVersion():
         return f'{self.major}.{self.minor}.{self.patch}'
         
     def __eq__(self, other):
-        return self.major == self.major and self.minor == self.minor and self.patch == self.patch
+        return self.major == other.major and self.minor == other.minor and self.patch == other.patch
 
     def __gt__(self, other):
         if self.major > other.major:
@@ -54,32 +54,102 @@ class FormatVersion():
         
         return self != other
 
-def generate_localization_key(asset_type: AssetType, asset: JsonResource):
+def gather_translations(asset_type: str, settings: dict, ignored_namespaces):
+    auto_name = settings.get('auto_name', False)
+    prefix = settings.get('prefix', '')
+    postfix = settings.get('postfix', '')
+
+    # Generate path name
+    match asset_type:
+        case AssetType.ITEM:
+            asset_path = './BP/items/**/*.json'
+            json_path =  "minecraft:item/description"
+        case AssetType.BLOCK:
+            asset_path = './BP/blocks/**/*.json'
+            json_path =  "minecraft:block/description"
+        case AssetType.ENTITY:
+            asset_path = './BP/entities/**/*.json'
+            json_path =  "minecraft:entity/description"
+        case AssetType.SPAWN_EGG:
+            asset_path = './BP/entities/**/*.json'
+            json_path =  "minecraft:entity/description"
+        case _:
+            return
+
+    asset_paths = glob.glob(asset_path, recursive=True)
+    translations : List[Translation] = []
+
+    for asset_file in asset_paths:
+        # Open asset and collect information
+        with open(asset_file) as io:
+            file = json.load(io)
+
+            # Get format version
+            try: 
+                format_version = dpath.util.get(file, 'format_version')
+            except(KeyError):
+                print(f"Warning: {asset_file} has no format_version, skipping...")
+                continue
+            
+            # Get identifier
+            try: 
+                identifier = dpath.util.get(file, f'{json_path}/identifier')
+            except(KeyError):
+                print(f"Warning: {asset_file} has no identifier, skipping...")
+                continue
+            
+            # Get name (if not auto_name)
+            try:
+                name = dpath.util.get(file, f'{json_path}/name')
+                if asset_type != AssetType.SPAWN_EGG:
+                    dpath.util.delete(file, f'{json_path}/name')
+            except(KeyError):
+                if auto_name:
+                    pass
+                else:
+                    print(f"Warning: {asset_file} has no name key, skipping...")
+                    continue
+        
+        # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
+        if identifier.split(':')[0] in ignored_namespaces:
+            continue
+
+        # GET LOCALISATION KEY
+        localization_key = generate_localization_key(asset_type, format_version).replace("identifier", identifier)
+
+        # Use settings if auto_name enabled
+        if auto_name:
+            localization_value = prefix + format_name(identifier) + postfix
+        else:
+            localization_value = name
+
+        translations.append(Translation(localization_key, localization_value, ""))
+
+    return translations
+
+def generate_localization_key(asset_type: AssetType, format_version):
     """
     Generates the localization key for the asset type. May depend on format version,
     or other things.
     """
 
-    # All assets that we are generating names for have a 'identifier' key.
-    identifier = asset.identifier
-
-    if asset_type == AssetType.SPAWN_EGG:
+    if asset_type == AssetType.ENTITY:
         key = "entity.identifier.name"
     elif asset_type == AssetType.ITEM:
         # TODO: What should happen if 1.16.100 items have DisplayName component?
 
         # Handle the different formats for items
-        if FormatVersion(asset.get_jsonpath('format_version')) < FormatVersion('1.16.100'):
+        if FormatVersion(format_version) < FormatVersion('1.16.100'):
             key = "item.identifier.name"
         else:
             key = "item.identifier"
     elif asset_type == AssetType.BLOCK:
         key = "tile.identifier.name"
-    elif asset_type == AssetType.ENTITY:
+    elif asset_type == AssetType.SPAWN_EGG:
         key = "item.spawn_egg.entity.identifier.name"
 
     # Finally, do the replacement and return
-    return key.replace("identifier", identifier)
+    return key
 
 def format_name(name: str):
     """
@@ -87,54 +157,11 @@ def format_name(name: str):
     """
     return name.split(":")[1].replace("_", " ").title()
 
-def gather_translations(asset_type: str, assets: List[JsonFileResource], settings: dict, name_jsonpath: str, ignored_namespaces) -> List[Translation]:
-    """
-    Gathers translations from the behavior pack.
-    """
-    auto_name = settings.get('auto_name', False)
-    prefix = settings.get('prefix', '')
-    postfix = settings.get('postfix', '')
-
-    translations : List[Translation] = []
-
-    for asset in assets:
-        try:
-            identifier = asset.identifier
-        except AssetNotFoundError:
-            print(f"Warning: {asset.file_path} has no identifier, skipping...")
-            continue
-
-        # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
-        if identifier.split(':')[0] in ignored_namespaces:
-            continue
-        
-        localization_key = generate_localization_key(asset_type, asset)
-
-        # Allow for generate_localization_key to return None (skip)
-        if localization_key is None:
-            continue
-
-        # Try/except to handle the case where the asset doesn't have a name.
-        # If this happens, we optionally name the entity automatically.
-        try:
-            # Since we process spawn_eggs before entities, we should ensure that spawn_eggs don't delete the name key
-            localization_value = asset.pop_jsonpath(name_jsonpath)
-            if asset_type == AssetType.SPAWN_EGG:
-                asset.delete_jsonpath(name_jsonpath)
-        except AssetNotFoundError:
-            if auto_name:
-                localization_value = prefix + format_name(identifier) + postfix
-            else:
-                continue
-        
-        translations.append(Translation(localization_key, localization_value, ""))
-    
-    return translations
-
 def main():
     """
     The entry point for the script.
     """
+    
     try:
         settings = json.loads(sys.argv[1])
     except IndexError:
@@ -143,33 +170,36 @@ def main():
 
     # Detect settings, and set defaults if not provided.
     overwrite = settings.get("overwrite", False)
-    language = settings.get("language", "en_US.lang")
+    languages = settings.get("languages", ["en_US.lang"])
     sort = settings.get("sort", False)
     ignored_namespaces = settings.get("ignored_namespaces", ['minecraft'])
     project = Project("./BP", "./RP")
-    behavior_pack = project.behavior_pack
+    bp = project.behavior_pack
     resource_pack = project.resource_pack
 
     translations = []
 
-    translations.extend(gather_translations(AssetType.SPAWN_EGG, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.ITEM, behavior_pack.items, settings.get("items", {}), "minecraft:item/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.BLOCK, behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.ITEM,settings.get("items", {}), ignored_namespaces))
+    translations.extend(gather_translations(AssetType.BLOCK,settings.get("blocks", {}), ignored_namespaces))
+    translations.extend(gather_translations(AssetType.SPAWN_EGG,settings.get("spawn_eggs", {}), ignored_namespaces))
+    translations.extend(gather_translations(AssetType.ENTITY,settings.get("entities", {}), ignored_namespaces))
 
-    try:
-        language_file = resource_pack.get_language_file(language)
-    except AssetNotFoundError:
-        print(f"Warning: {language} file not found, creating...")
-        Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
-        open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
-        language_file = LanguageFile(file_path=f'texts/{language}', pack=resource_pack)
+    if isinstance(languages, str):
+        languages = [languages]
+    for language in languages:
+        try:
+            language_file = resource_pack.get_language_file("texts/" + language)
+        except AssetNotFoundError:
+            print(f"Warning: {language} file not found, creating...")
+            Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
+            open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
+            language_file = LanguageFile(file_path=f'texts/{language}', pack=resource_pack)
 
-    for translation in translations:
-        language_file.add_translation(translation, overwrite = overwrite)
+        for translation in translations:
+            language_file.add_translation(translation, overwrite = overwrite)
 
-    if sort:
-        language_file.translations.sort(key=lambda t: t.key)
+        if sort:
+            language_file.translations.sort(key=lambda t: t.key)
     project.save()
 
 if __name__ == "__main__":
