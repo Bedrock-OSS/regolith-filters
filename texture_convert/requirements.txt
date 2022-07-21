@@ -1,2 +1,1 @@
-gimpformats==2021.1.1
-psd_tools==1.9.18
+layeredimage==2022.0.1
