@@ -37,3 +37,14 @@ This allows you to use `.pdn` files directly inside of your addon, without conve
     "filter": "texture_convert"
 }
 ```
+
+## Changelog
+
+### 1.1.0
+
+- Add support for paint.net's `.pdt` files
+- Clean up the code
+
+### 1.0.0
+
+The first release of Texture Convert.
