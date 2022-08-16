@@ -158,7 +158,7 @@ def main():
     translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
 
     try:
-        language_file = resource_pack.get_language_file(language)
+        language_file = resource_pack.get_language_file("texts/" + language)
     except AssetNotFoundError:
         print(f"Warning: {language} file not found, creating...")
         Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
