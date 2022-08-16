@@ -118,9 +118,10 @@ def gather_translations(asset_type: str, assets: List[JsonFileResource], setting
         # If this happens, we optionally name the entity automatically.
         try:
             # Since we process spawn_eggs before entities, we should ensure that spawn_eggs don't delete the name key
-            localization_value = asset.pop_jsonpath(name_jsonpath)
             if asset_type == AssetType.SPAWN_EGG:
-                asset.delete_jsonpath(name_jsonpath)
+                localization_value = asset.get_jsonpath(name_jsonpath)
+            else:
+                localization_value = asset.pop_jsonpath(name_jsonpath)
         except AssetNotFoundError:
             if auto_name:
                 localization_value = prefix + format_name(identifier) + postfix
