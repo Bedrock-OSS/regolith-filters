@@ -34,7 +34,7 @@ class FormatVersion():
         return f'{self.major}.{self.minor}.{self.patch}'
         
     def __eq__(self, other):
-        return self.major == self.major and self.minor == self.minor and self.patch == self.patch
+        return self.major == other.major and self.minor == other.minor and self.patch == other.patch
 
     def __gt__(self, other):
         if self.major > other.major:
