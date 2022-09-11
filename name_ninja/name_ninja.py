@@ -34,7 +34,7 @@ class FormatVersion():
         return f'{self.major}.{self.minor}.{self.patch}'
         
     def __eq__(self, other):
-        return self.major == self.major and self.minor == self.minor and self.patch == self.patch
+        return self.major == other.major and self.minor == other.minor and self.patch == other.patch
 
     def __gt__(self, other):
         if self.major > other.major:
@@ -63,7 +63,7 @@ def generate_localization_key(asset_type: AssetType, asset: JsonResource):
     # All assets that we are generating names for have a 'identifier' key.
     identifier = asset.identifier
 
-    if asset_type == AssetType.SPAWN_EGG:
+    if asset_type == AssetType.ENTITY:
         key = "entity.identifier.name"
     elif asset_type == AssetType.ITEM:
         # TODO: What should happen if 1.16.100 items have DisplayName component?
@@ -75,7 +75,7 @@ def generate_localization_key(asset_type: AssetType, asset: JsonResource):
             key = "item.identifier"
     elif asset_type == AssetType.BLOCK:
         key = "tile.identifier.name"
-    elif asset_type == AssetType.ENTITY:
+    elif asset_type == AssetType.SPAWN_EGG:
         key = "item.spawn_egg.entity.identifier.name"
 
     # Finally, do the replacement and return
@@ -118,9 +118,10 @@ def gather_translations(asset_type: str, assets: List[JsonFileResource], setting
         # If this happens, we optionally name the entity automatically.
         try:
             # Since we process spawn_eggs before entities, we should ensure that spawn_eggs don't delete the name key
-            localization_value = asset.pop_jsonpath(name_jsonpath)
             if asset_type == AssetType.SPAWN_EGG:
-                asset.delete_jsonpath(name_jsonpath)
+                localization_value = asset.get_jsonpath(name_jsonpath)
+            else:
+                localization_value = asset.pop_jsonpath(name_jsonpath)
         except AssetNotFoundError:
             if auto_name:
                 localization_value = prefix + format_name(identifier) + postfix
@@ -152,13 +153,13 @@ def main():
 
     translations = []
 
-    translations.extend(gather_translations(AssetType.SPAWN_EGG, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.SPAWN_EGG, behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", ignored_namespaces))
     translations.extend(gather_translations(AssetType.ITEM, behavior_pack.items, settings.get("items", {}), "minecraft:item/description/name", ignored_namespaces))
     translations.extend(gather_translations(AssetType.BLOCK, behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", ignored_namespaces))
+    translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
 
     try:
-        language_file = resource_pack.get_language_file(language)
+        language_file = resource_pack.get_language_file("texts/" + language)
     except AssetNotFoundError:
         print(f"Warning: {language} file not found, creating...")
         Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
