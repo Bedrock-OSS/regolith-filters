@@ -17,43 +17,6 @@ class AssetType(Enum):
     BLOCK = 3
     ENTITY = 4
 
-# TODO: Consider moving this into Reticulator
-class FormatVersion():
-    def __init__(self, version: str) -> None:
-        elements = version.split('.')
-
-        # Pack with extra data if it's missing
-        for i in range(3 - len(elements)):
-            elements.append('0')
-        
-        self.major = int(elements[0])
-        self.minor = int(elements[1])
-        self.patch = int(elements[2])
-
-    def __repr__(self) -> str:
-        return f'{self.major}.{self.minor}.{self.patch}'
-        
-    def __eq__(self, other):
-        return self.major == other.major and self.minor == other.minor and self.patch == other.patch
-
-    def __gt__(self, other):
-        if self.major > other.major:
-            return True
-        elif self.major < other.major:
-            return False
-
-        if self.minor > other.minor:
-            return True
-        elif self.minor < other.minor:
-            return False
-
-        if self.patch > other.patch:
-            return True
-        elif self.patch < other.patch:
-            return False
-        
-        return self != other
-
 def generate_localization_key(asset_type: AssetType, asset: JsonResource):
     """
     Generates the localization key for the asset type. May depend on format version,
@@ -69,7 +32,7 @@ def generate_localization_key(asset_type: AssetType, asset: JsonResource):
         # TODO: What should happen if 1.16.100 items have DisplayName component?
 
         # Handle the different formats for items
-        if FormatVersion(asset.get_jsonpath('format_version')) < FormatVersion('1.16.100'):
+        if FormatVersion(asset.format_version) < FormatVersion('1.16.100'):
             key = "item.identifier.name"
         else:
             key = "item.identifier"

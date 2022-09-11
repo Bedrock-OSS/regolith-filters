@@ -101,3 +101,8 @@ The first release of Name Ninja
  - Fix name field for `1.10` format items
  - Add `ignored_namespaces` option, which defaults to ['minecraft']
  - Now prints a warning, and gracefully handles assets without identifiers
+
+### 1.2.0
+
+ - Updated 'reticulator' to 0.0.17-beta
+ - Corrected a few bugs in the name ninja code especially regarding when using the name key
