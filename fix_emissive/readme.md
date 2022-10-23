@@ -13,3 +13,9 @@ You only need this filter if you use an editor that leaves these artifacts, or y
     "filter": "fix_emissive"
 }
 ```
+
+# Changelog
+
+### 1.0.0
+
+The first release of Fix Emissive filter.

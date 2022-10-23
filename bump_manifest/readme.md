@@ -26,3 +26,9 @@ This filter uses a file located in your data folder to track current version. By
 You may edit this file by hand to set your packs current version, for example if you need to update the major version, or to reset the minor version.
 
 Every time the filter runs, the version will update (e.g, `[1, 0, 1`]), and the version will be copied into the manifest file.
+
+# Changelog
+
+### 1.0.0 
+
+The first release of Bump Manifest.

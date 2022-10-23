@@ -62,6 +62,10 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.2.0 
+
+Update versioning introduced in 1.19.30.20 beta
+
 ### 1.1.0
 
  - Removed the modules from data as it was causing long run times, likely due to needing to move all those files when regolith runs. The only modules kept were the mojang- typings. This change should decrease the amount of time regolith takes to run when using this filter.

@@ -30,3 +30,10 @@ and the actual results. You can use `errors_stop_execution` setting to make
 - `errors_stop_execution: bool` - If true, the filter will stop Regolith with
   sys.exit(1) in case of finding any errors. If false, the filter will just
   print the errors and continue. The default value is false.
+
+
+# Changelog
+
+### 1.0.0 
+
+The first release of Filter Tester.
