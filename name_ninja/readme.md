@@ -106,3 +106,8 @@ The first release of Name Ninja
 
  - Updated 'reticulator' to 0.0.17-beta
  - Corrected a few bugs in the name ninja code especially regarding when using the name key
+
+### 1.2.1
+
+ - Updated 'reticulator' to 0.0.18-beta
+ - Fixed associated issue with translations 'stacking' in the export, rather than replacing. 
