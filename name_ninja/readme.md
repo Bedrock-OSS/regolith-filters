@@ -49,7 +49,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 		"language": "en_GB.lang",
 		"overwrite": true,
 		"sort": true,
-		"ignored_identifiers": ['minecraft'],
+		"ignored_identifiers": ["minecraft"],
 		"entities": {
 			"auto_name": true,
 			"prefix": "§1",
