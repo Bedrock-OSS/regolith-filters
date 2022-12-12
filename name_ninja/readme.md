@@ -111,3 +111,9 @@ The first release of Name Ninja
 
  - Updated 'reticulator' to 0.0.18-beta
  - Fixed associated issue with translations 'stacking' in the export, rather than replacing. 
+
+### 1.2.2
+
+ - Updated 'reticulator' to 0.1.3-beta
+ - Updated 'dpath' to 2.1.2
+ - Fixed issue of duplicated keys in lang file while using 'overwrite'.
