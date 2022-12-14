@@ -23,13 +23,9 @@ This will add a translation line such as: `entity.sirlich:frog.name=🐸 South A
 
 ## Using this Filter
 
-Simply register the filter in your `config.json`:
-
-```json
-{
-	"filter": "name_ninja"
-}
-```
+1) Install 'Python'. We have prepared [installation instructions](https://bedrock-oss.github.io/regolith/guide/python-filters).
+2) Install `name_ninja` by using `regolith install name_ninja` from within a regolith project directory.
+3) Add the `name_ninja` filter to a [profile of your choice.](https://bedrock-oss.github.io/regolith/guide/getting-started#adding-your-first-filter)
 
 ## Example Project
 
