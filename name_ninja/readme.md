@@ -117,3 +117,7 @@ The first release of Name Ninja
  - Updated 'reticulator' to 0.1.3-beta
  - Updated 'dpath' to 2.1.2
  - Fixed issue of duplicated keys in lang file while using 'overwrite'.
+
+### 1.2.3
+
+ - Fixed issue where it wouldn't create a the lang file if missing
