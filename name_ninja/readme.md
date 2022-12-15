@@ -23,18 +23,14 @@ This will add a translation line such as: `entity.sirlich:frog.name=🐸 South A
 
 ## Using this Filter
 
-Simply register the filter in your `config.json`:
-
-```json
-{
-	"filter": "name_ninja"
-}
-```
+1) Install 'Python'. We have prepared [installation instructions](https://bedrock-oss.github.io/regolith/guide/python-filters).
+2) Install `name_ninja` by using `regolith install name_ninja` from within a regolith project directory.
+3) Add the `name_ninja` filter to a [profile of your choice.](https://bedrock-oss.github.io/regolith/guide/getting-started#adding-your-first-filter)
 
 ## Example Project
 
 An example project for this filter is contained within the `tests` folder of this repository. It shows different possible ways to name your assets:
- - Directly inside of the language files is always allows
+ - Directly inside of the language files is always allowed
  - By submitting a "name" field into any BP description
  - By turning on 'auto_name', and allowing Regolith to generate the names fully from scratch
 
@@ -49,7 +45,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 		"language": "en_GB.lang",
 		"overwrite": true,
 		"sort": true,
-		"ignored_identifiers": ['minecraft'],
+		"ignored_identifiers": ["minecraft"],
 		"entities": {
 			"auto_name": true,
 			"prefix": "§1",
