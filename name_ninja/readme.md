@@ -117,3 +117,4 @@ The first release of Name Ninja
 ### 1.2.3
 
  - Fixed issue where it wouldn't create a the lang file if missing
+ - Fixed issue where it would fail if an identifier did not exist

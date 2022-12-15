@@ -64,7 +64,7 @@ def gather_translations(asset_type: str, assets: List[JsonFileResource], setting
         try:
             identifier = asset.identifier
         except AssetNotFoundError:
-            print(f"Warning: {asset.file_path} has no identifier, skipping...")
+            print(f"Warning: {asset.filepath} has no identifier, skipping...")
             continue
 
         # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
