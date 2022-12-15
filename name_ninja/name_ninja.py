@@ -64,7 +64,7 @@ def gather_translations(asset_type: str, assets: List[JsonFileResource], setting
         try:
             identifier = asset.identifier
         except AssetNotFoundError:
-            print(f"Warning: {asset.file_path} has no identifier, skipping...")
+            print(f"Warning: {asset.filepath} has no identifier, skipping...")
             continue
 
         # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
@@ -127,7 +127,7 @@ def main():
         print(f"Warning: {language} file not found, creating...")
         Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
         open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
-        language_file = LanguageFile(file_path=f'texts/{language}', pack=resource_pack)
+        language_file = LanguageFile(filepath=f'texts/{language}', pack=resource_pack)
 
     for translation in translations:
         language_file.add_translation(translation, overwrite = overwrite)

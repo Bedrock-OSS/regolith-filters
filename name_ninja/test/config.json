@@ -8,7 +8,7 @@
     "regolith": {
         "dataPath": "./packs/data",
         "profiles": {
-            "dev": {
+            "default": {
                 "_comment": "Export the test addon into your com.mojang folder for testing.",
                 "filters": [
                     {
@@ -47,32 +47,7 @@
                 "_comment": "Export the test addon locally, for quick visual analysis of the results.",
                 "filters": [
                     {
-                        "filter": "local_name_ninja",
-                        "settings": {
-                            "language": "en_US.lang",
-                            "overwrite": false,
-                            "ignored_namespaces": [],
-                            "entities": {
-                                "auto_name": true,
-                                "prefix": "§1",
-                                "postfix": "§r"
-                            },
-                            "blocks": {
-                                "auto_name": true,
-                                "prefix": "§2",
-                                "postfix": "§r"
-                            },
-                            "items": {
-                                "auto_name": true,
-                                "prefix": "§3",
-                                "postfix": "§r"
-                            },
-                            "spawn_eggs": {
-                                "auto_name": true,
-                                "prefix": "§4",
-                                "postfix": " Spawn Egg§r"
-                            }
-                        }
+                        "profile": "default"
                     }
                 ],
                 "export": {
