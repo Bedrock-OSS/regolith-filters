@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "name_ninja",
+    "type": "object",
+    "definitions": {
+        "typeSettings": {
+            "type": "object",
+            "properties": {
+                "auto_name": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to give assets without a 'name' property an auto-generated name. For example `sirlich:woolly_mammoth` would become \"Woolly Mammoth\""
+                },
+                "prefix": {
+                    "type": "string",
+                    "default": "",
+                    "description": "A prefix that is appended to the start of the translation. Useful for giving color codes to your names."
+                },
+                "postfix": {
+                    "type": "string",
+                    "default": "",
+                    "description": "A postfix that is appended to the end of the translation. Useful for resetting color codes from your names."
+                }
+            }
+        }
+    },
+    "properties": {
+        "language": {
+            "type":"string",
+            "default": "en_US.lang",
+            "description": "The language file where you want to place the translations."
+        },
+        "overwrite": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether languages codes should overwrite/replace translations already defined in the language file."
+        },
+        "sort": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to sort the language file, on export. Useful for grouping assets."
+        },
+        "ignored_namespaces": {
+            "type": "array",
+            "default": ["minecraft"],
+            "description": "A list of namespaces which you would like to ignore.",
+            "items": {
+                "type":"string"
+            }
+        },
+        "entities": {
+            "description": "Settings applied to entities.",
+            "$ref": "#/definitions/typeSettings"
+        },
+        "blocks": {
+            "description": "Settings applied to blocks.",
+            "$ref": "#/definitions/typeSettings"
+        },
+        "items": {
+            "description": "Settings applied to items.",
+            "$ref": "#/definitions/typeSettings"
+        },
+        "spawn_eggs": {
+            "description": "Settings applied to spawn eggs.",
+            "$ref": "#/definitions/typeSettings"
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "gametests",
+    "type": "object",
+    "properties": {
+        "buildOptions": {
+            "type":"object",
+            "default": {
+                "entryPoints": ["src/main.ts"],
+                "target": "es2020",
+                "format": "esm",
+                "bundle": true,
+                "minify": true
+            },
+            "additionalProperties": true,
+            "description": "Specifies build options for esbuild."
+        },
+        "moduleUUID": {
+            "type": "string",
+            "description": "The UUID to place inside the manifest module."
+        },
+        "modules": {
+            "type": "array",
+            "default": ["mojang-gametest", "mojang-minecraft"],
+            "description": "The gametest modules to inject as dependencies.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "outfile": {
+            "type": "string",
+            "default": "BP/scripts/main.js",
+            "description": "The path to place the built script file at."
+        }
+    }
+}
