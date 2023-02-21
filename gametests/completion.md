@@ -1,5 +1,10 @@
 # Gametests
 
-This filter is for injecting into a pack a gametest module and code mainly for actual map testing.
+Features
+- Typescript support and bundling through [esbuild](https://esbuild.github.io/)
+- Manages manifest script dependencies
+- Manages manifest module
 
-The advantage of using this specific filter is that without running this filter, no gametest content will be in the final pack (for example, dev and QA profile might include gametests and package profile might not).
+This filter manages script-related manifest settings and allows separation of scripts from the main pack.
+
+Utilizing the separation ability allows you to keep unit tests and such separate from your main pack. This can be used by having one profile setup for QA/development which uses this filter to add the unit tests to the pack and have another profile which does not include this filter.

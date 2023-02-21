@@ -118,10 +118,29 @@ for (let module of settings.modules) {
     console.warn(`${version} is not a known version for module '${name}'`);
   }
 
-  manifest.dependencies.push({
-    module_name: name,
-    version: version,
-  });
+  let exists = false;
+  if (
+    manifest.dependencies.findIndex((v) => {
+      if (typeof v.version !== "string") return;
+      //@ts-ignore
+      if (v.module_name !== name) return;
+      exists = true;
+      return v.version !== version;
+    }) !== -1
+  ) {
+    throw `Module '${name}' already exists in manifest with a different version`;
+  }
+
+  if (!exists) {
+    manifest.dependencies.push({
+      module_name: name,
+      version: version,
+    });
+  } else {
+    console.warn(
+      `Module ${name} already exists in the manifest and will not be added again`
+    );
+  }
 }
 
 // Ensure manifest contains a modules array
@@ -129,13 +148,30 @@ if (!manifest.modules) manifest.modules = [];
 
 // Add script module to manifest
 const entry = settings.outfile.split("/").slice(1).join("/");
-manifest.modules.push({
-  description: "Scripting module",
-  type: settings.moduleType,
-  uuid: settings.moduleUUID,
-  version: [0, 0, 1],
-  entry,
-});
+
+let hasModule = false;
+if (
+  manifest.modules.findIndex((v) => {
+    if (v.type !== settings.moduleType) return;
+    hasModule = true;
+    if (v.uuid !== settings.moduleUUID) return true;
+    if (v.entry !== entry) return true;
+  }) !== -1
+) {
+  throw `Existing manifest module of type ${settings.moduleType} found with different properties`;
+}
+
+if (!hasModule) {
+  manifest.modules.push({
+    description: "Scripting module",
+    type: settings.moduleType,
+    uuid: settings.moduleUUID,
+    version: [0, 0, 1],
+    entry,
+  });
+} else {
+  console.warn(`Existing manifest module found with matching properties and will not be added again`)
+}
 
 console.log("Saving manifest.json");
 fs.writeFileSync(settings.manifest, JSON.stringify(manifest, null, 4));
