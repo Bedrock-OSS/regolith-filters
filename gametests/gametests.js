@@ -98,7 +98,7 @@ if (!manifest.dependencies) manifest.dependencies = [];
 
 // Add script module dependencies to manifest
 for (let module of settings.modules) {
-  const match = module.match(/@?([^@]+)(?:@(.+))?/);
+  const match = module.match(/(@?[^@]+)(?:@(.+))?/);
   if (!match || match[0].length !== module.length) {
     throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
   }
