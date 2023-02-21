@@ -20,11 +20,6 @@ const knownVersions = {
 };
 
 const defSettings = {
-  moduleUUID: defaultUUID,
-  modules: ["@minecraft/server"],
-  outfile: "BP/scripts/main.js",
-  moduleType: "script",
-  manifest: "BP/manifest.json",
   buildOptions: {
     entryPoints: ["data/gametests/src/main.ts"],
     external: [""], // Empty string to mark as string[]
@@ -33,6 +28,11 @@ const defSettings = {
     bundle: true,
     minify: true,
   },
+  moduleUUID: defaultUUID,
+  modules: ["@minecraft/server", "@minecraft/server-gametest"],
+  outfile: "BP/scripts/main.js",
+  moduleType: "script",
+  manifest: "BP/manifest.json",
 };
 defSettings.buildOptions.external = []; // Reset external property so that it does not cause issues
 
