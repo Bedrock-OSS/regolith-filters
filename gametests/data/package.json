@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/mojang-gametest": "^0.1.5",
-    "@types/mojang-minecraft": "^0.1.6"
+    "@minecraft/server": "^1.1.0-beta.1.19.60-stable",
+    "@minecraft/server-gametest": "^1.0.0-beta.1.19.60-stable"
   }
 }

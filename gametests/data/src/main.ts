@@ -1,19 +1,17 @@
-import { world } from 'mojang-minecraft';
-import * as GameTest from 'mojang-gametest';
-import { BlockLocation } from 'mojang-minecraft';
+import {
+  BlockLocation,
+  system,
+  TicksPerSecond,
+  world,
+} from '@minecraft/server';
+import * as GameTest from '@minecraft/server-gametest';
 
-world.events.tick.subscribe((tick_event) => {
-  let should_trigger = tick_event.currentTick % 100 == 0;
-  let player_count = [...world.getPlayers()].length;
-  if (should_trigger && player_count > 0) {
-    let seconds = tick_event.currentTick / 20;
-    world
-      .getDimension('overworld')
-      .runCommand(
-        `tellraw @a {"rawtext":[{"text":"It has been ${seconds} seconds"}]}`
-      );
+system.runSchedule(() => {
+  let player_count = world.getAllPlayers().length;
+  if (player_count > 0) {
+    world.say(`It has been ${system.currentTick / TicksPerSecond} seconds`);
   }
-});
+}, 100);
 
 function simpleMobTest(test: GameTest.Test) {
   const attackerId = 'fox';

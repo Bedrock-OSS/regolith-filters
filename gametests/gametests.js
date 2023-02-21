@@ -1,26 +1,44 @@
+// @ts-check
 const fs = require("fs");
 const { randomUUID } = require("crypto");
 
+const uuidFile = "data/gametests/uuid.txt";
+let defaultUUID = randomUUID();
+if (fs.existsSync(uuidFile)) {
+  defaultUUID = fs.readFileSync(uuidFile).toString();
+} else {
+  fs.writeFileSync(uuidFile, defaultUUID);
+}
+
+/** @type {{[module: string]: string[]}} */
+const knownVersions = {
+  "@minecraft/server": ["1.0.0", "1.1.0-beta"],
+  "@minecraft/server-ui": ["1.0.0-beta"],
+  "@minecraft/server-net": ["1.0.0-beta"],
+  "@minecraft/server-admin": ["1.0.0-beta"],
+  "@minecraft/server-gametest": ["1.0.0-beta"],
+};
+
 const defSettings = {
-  moduleUUID: randomUUID(),
-  modules: ["mojang-gametest", "mojang-minecraft"],
+  moduleUUID: defaultUUID,
+  modules: ["@minecraft/server"],
   outfile: "BP/scripts/main.js",
   moduleType: "script",
   manifest: "BP/manifest.json",
   buildOptions: {
     entryPoints: ["data/gametests/src/main.ts"],
-    external: [],
+    external: [""], // Empty string to mark as string[]
     target: "es2020",
     format: "esm",
     bundle: true,
     minify: true,
   },
 };
-const settings = Object.assign(
-  {},
-  defSettings,
-  process.argv[2] ? JSON.parse(process.argv[2]) : {}
-);
+defSettings.buildOptions.external = []; // Reset external property so that it does not cause issues
+
+/** @type {typeof defSettings} */
+const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
+const settings = Object.assign({}, defSettings, argParsed);
 settings.buildOptions = Object.assign(
   {},
   defSettings.buildOptions,
@@ -29,6 +47,7 @@ settings.buildOptions = Object.assign(
 settings.buildOptions.outfile = settings.outfile;
 settings.buildOptions.external.push(...settings.modules);
 
+// Ensure types for settings
 const typeMap = {
   buildOptions: "object",
   moduleUUID: "string",
@@ -52,52 +71,63 @@ for (let k in typeMap) {
 }
 
 console.log("Modifying manifest.json");
-let manifest = fs.readFileSync("BP/manifest.json", "utf8");
-manifest = JSON.parse(manifest);
+const manifestStr = fs.readFileSync("BP/manifest.json", "utf8");
+/** @type {{
+  format_version: number; 
+  header: {
+    name: string;
+    description: string;
+    uuid: string;
+    version: [number, number, number];
+    min_engine_version: [number, number, number];
+  };
+  modules: {
+    description?: string; 
+    type: string; 
+    language?: string; 
+    entry?: string; 
+    uuid: string; 
+    version: string | [number, number, number];
+  }[]; 
+  dependencies: ({module_name: string; version: string} | {uuid: string; version: [number, number, number]})[];
+}} */
+const manifest = JSON.parse(manifestStr);
 
-// Required dependencies
-if (!manifest.dependencies) {
-  manifest.dependencies = [];
-}
-const MODULEINFO = {
-  "mojang-gametest": {
-    description: "mojang-gametest",
-    uuid: "6f4b6893-1bb6-42fd-b458-7fa3d0c89616",
-    version: "1.0.0-beta",
-  },
-  "mojang-minecraft": {
-    description: "mojang-minecraft",
-    uuid: "b26a4d4c-afdf-4690-88f8-931846312678",
-    version: "1.0.0-beta",
-  },
-  "mojang-minecraft-ui": {
-    description: "mojang-minecraft-ui",
-    uuid: "2bd50a27-ab5f-4f40-a596-3641627c635e",
-    version: "1.0.0-beta",
-  },
-  "mojang-net": {
-    description: "mojang-net",
-    uuid: "777b1798-13a6-401c-9cba-0cf17e31a81b",
-    version: "1.0.0-beta",
-  },
-  "mojang-minecraft-server-admin": {
-    description: "mojang-minecraft-server-admin",
-    uuid: "53d7f2bf-bf9c-49c4-ad1f-7c803d947920",
-    version: "1.0.0-beta",
-  },
-};
+// Ensure manifest contains dependencies array
+if (!manifest.dependencies) manifest.dependencies = [];
+
+// Add script module dependencies to manifest
 for (let module of settings.modules) {
-  if (!Object.keys(MODULEINFO).includes(module)) {
-    console.log(`Unknown gametest module provided "${module}"`);
-    process.exit(1);
+  const match = module.match(/@?([^@]+)(?:@(.+))?/);
+  if (!match || match[0].length !== module.length) {
+    throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
   }
-  manifest.dependencies.push(MODULEINFO[module]);
+  const name = match[1];
+  let version = match[2];
+
+  const versions = knownVersions[name];
+  if (!versions) {
+    console.warn(`'${name}' is not a known module`);
+    if (!version) {
+      throw `Cannot find default version for unknown module '${name}'`;
+    }
+  } else if (!version) {
+    version = versions[0];
+    console.log(`Module version for '${name}' defaulted to '${version}'`);
+  } else if (!versions.includes(version)) {
+    console.warn(`${version} is not a known version for module '${name}'`);
+  }
+
+  manifest.dependencies.push({
+    module_name: name,
+    version: version,
+  });
 }
 
-// GameTests module
-if (!manifest.modules) {
-  manifest.modules = [];
-}
+// Ensure manifest contains a modules array
+if (!manifest.modules) manifest.modules = [];
+
+// Add script module to manifest
 const entry = settings.outfile.split("/").slice(1).join("/");
 manifest.modules.push({
   description: "Scripting module",
