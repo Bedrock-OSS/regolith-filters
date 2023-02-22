@@ -64,6 +64,16 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.3.0
+
+- `settings.modules` now takes an array of strings in the format of `<module_name>@<version>` or `<module_name>`, this change allows you to use a specific version of a script module
+- A warning is now printed when using an unknown module rather than throwing an error.
+- An error is thrown if you do not specify a version with an unknown module
+- Updated to use new dependency format `{module_name: string, version: string}`
+- Updated example script to use 1.19.60 beta script modules
+- Updated the schema to include some enums for module suggestions in VSCode
+- Added handling for attempting to add modules when manifest modules already exist
+
 ### 1.2.0
 
 Update versioning introduced in 1.19.30.20 beta
