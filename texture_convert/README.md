@@ -40,6 +40,10 @@ This allows you to use `.pdn` files directly inside of your addon, without conve
 
 ## Changelog
 
+### 1.1.1
+
+- Fixed an error, when file was without an extension
+
 ### 1.1.0
 
 - Add support for paint.net's `.pdt` files
