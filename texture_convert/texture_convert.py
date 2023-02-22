@@ -6,7 +6,10 @@ for root, d_names,f_names in os.walk("."):
     for f in f_names:
         imgpath = os.path.join(root, f)
         replaced = False
-        ext = f.split(".")[1]
+        fSplit = f.split(".")
+        if len(fSplit) < 2:
+            continue
+        ext = fSplit[1]
         if ext in ["pdn", "xcf", "psd"]:
             replaced = True
             img = layeredimage.io.openLayerImage(imgpath)
