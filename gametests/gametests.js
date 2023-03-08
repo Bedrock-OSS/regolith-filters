@@ -34,7 +34,8 @@ const defSettings = {
   moduleType: "script",
   manifest: "BP/manifest.json",
 };
-defSettings.buildOptions.external = []; // Reset external property so that it does not cause issues
+const external = []; // Reset external property so that it does not cause issues
+defSettings.buildOptions.external = external;
 
 /** @type {typeof defSettings} */
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
@@ -45,7 +46,6 @@ settings.buildOptions = Object.assign(
   settings.buildOptions
 );
 settings.buildOptions.outfile = settings.outfile;
-settings.buildOptions.external.push(...settings.modules);
 
 // Ensure types for settings
 const typeMap = {
@@ -132,6 +132,7 @@ for (let module of settings.modules) {
   }
 
   if (!exists) {
+    external.push(name);
     manifest.dependencies.push({
       module_name: name,
       version: version,
@@ -170,7 +171,9 @@ if (!hasModule) {
     entry,
   });
 } else {
-  console.warn(`Existing manifest module found with matching properties and will not be added again`)
+  console.warn(
+    `Existing manifest module found with matching properties and will not be added again`
+  );
 }
 
 console.log("Saving manifest.json");
