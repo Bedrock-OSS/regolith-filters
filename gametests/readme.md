@@ -64,6 +64,10 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.3.1
+
+- Fixed full module string being added to the `buildOptions.external` property instead of just the module name
+
 ### 1.3.0
 
 - `settings.modules` now takes an array of strings in the format of `<module_name>@<version>` or `<module_name>`, this change allows you to use a specific version of a script module
