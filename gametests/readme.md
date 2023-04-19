@@ -64,6 +64,10 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.3.2
+
+- Added new `@minecraft/server` versions
+
 ### 1.3.1
 
 - Fixed full module string being added to the `buildOptions.external` property instead of just the module name

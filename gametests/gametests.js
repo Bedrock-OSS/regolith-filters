@@ -12,7 +12,7 @@ if (fs.existsSync(uuidFile)) {
 
 /** @type {{[module: string]: string[]}} */
 const knownVersions = {
-  "@minecraft/server": ["1.0.0", "1.1.0-beta"],
+  "@minecraft/server": ["1.0.0", "1.1.0", "1.1.0-beta", "1.2.0-beta"],
   "@minecraft/server-ui": ["1.0.0-beta"],
   "@minecraft/server-net": ["1.0.0-beta"],
   "@minecraft/server-admin": ["1.0.0-beta"],
