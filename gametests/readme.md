@@ -41,14 +41,14 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Settings
 
-| Setting        | Type                                                     | Default                                                 | Description                                                                                           |
-| -------------- | -------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)         | Specifies build options for esbuild                                                                   |
-| `moduleUUID`   | string                                                   | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                          |
-| `modules`      | string[]                                                 | ["@minecraft/server"]                                   | The gametest modules to inject as dependencies, follows the format '<module>@<version>' or '<module>' |
-| `outfile`      | string                                                   | "BP/scripts/main.js"                                    | The path to place the built script file at                                                            |
-| `moduleType`   | string                                                   | "script"                                                | The manifest module type to inject                                                                    |
-| `manifest`     | string                                                   | "BP/manifest.json"                                      | The manifest to edit                                                                                  |
+| Setting          | Type                                                  | Default                                                 | Description                                                                                                       |
+| ---------------- | ----------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)            | Specifies build options for esbuild                                                                               |
+| `moduleUUID`   | string                                                | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                                      |
+| `modules`      | string[]                                              | ["@minecraft/server"]                                   | The gametest modules to inject as dependencies, follows the format '`<module>`@`<version>`' or '`<module>`' |
+| `outfile`      | string                                                | "BP/scripts/main.js"                                    | The path to place the built script file at                                                                        |
+| `moduleType`   | string                                                | "script"                                                | The manifest module type to inject                                                                                |
+| `manifest`     | string                                                | "BP/manifest.json"                                      | The manifest to edit                                                                                              |
 
 #### Default Build Options
 
@@ -63,6 +63,11 @@ The filter also has included support for importing JSON files using JSON5 parser
 ```
 
 ## Changelog
+
+### 1.3.3
+
+- Added new `@minecraft/server` and `@minecraft/server-ui` versions
+- Fixed modules not being added to `buildOptions.external` if it was already specified in the filter settings
 
 ### 1.3.2
 
