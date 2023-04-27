@@ -12,8 +12,20 @@ if (fs.existsSync(uuidFile)) {
 
 /** @type {{[module: string]: string[]}} */
 const knownVersions = {
-  "@minecraft/server": ["1.0.0", "1.1.0", "1.1.0-beta", "1.2.0-beta"],
-  "@minecraft/server-ui": ["1.0.0-beta"],
+  "@minecraft/server": [
+    "1.1.0",
+    "1.0.0",
+    "1.2.0-beta",
+    /** Preview Only (1.20.0+) */
+    "1.2.0",
+    "1.3.0-beta",
+  ],
+  "@minecraft/server-ui": [
+    "1.0.0-beta",
+    /** Preview Only (1.20.0+) */
+    "1.0.0",
+    "1.1.0-beta",
+  ],
   "@minecraft/server-net": ["1.0.0-beta"],
   "@minecraft/server-admin": ["1.0.0-beta"],
   "@minecraft/server-gametest": ["1.0.0-beta"],
@@ -34,18 +46,16 @@ const defSettings = {
   moduleType: "script",
   manifest: "BP/manifest.json",
 };
-const external = []; // Reset external property so that it does not cause issues
-defSettings.buildOptions.external = external;
+// Reset external property so that it does not cause issues
+defSettings.buildOptions.external = [];
 
 /** @type {typeof defSettings} */
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
 const settings = Object.assign({}, defSettings, argParsed);
-settings.buildOptions = Object.assign(
-  {},
-  defSettings.buildOptions,
-  settings.buildOptions
-);
+settings.buildOptions = Object.assign({}, defSettings.buildOptions, settings.buildOptions);
 settings.buildOptions.outfile = settings.outfile;
+
+const external = settings.buildOptions.external;
 
 // Ensure types for settings
 const typeMap = {
@@ -57,16 +67,13 @@ const typeMap = {
   manifest: "string",
 };
 const throwTypeError = (k) => {
-  throw new TypeError(
-    `${k}: ${JSON.stringify(settings[k])} is not an ${typeMap[k]}`
-  );
+  throw new TypeError(`${k}: ${JSON.stringify(settings[k])} is not an ${typeMap[k]}`);
 };
 for (let k in typeMap) {
   if (typeMap[k] === "array") {
     if (!Array.isArray(settings[k])) throwTypeError(k);
   } else if (typeMap[k] === "object") {
-    if (typeof settings[k] !== "object" || Array.isArray(settings[k]))
-      throwTypeError(k);
+    if (typeof settings[k] !== "object" || Array.isArray(settings[k])) throwTypeError(k);
   } else if (typeof settings[k] !== typeMap[k]) throwTypeError(k);
 }
 
@@ -138,9 +145,7 @@ for (let module of settings.modules) {
       version: version,
     });
   } else {
-    console.warn(
-      `Module ${name} already exists in the manifest and will not be added again`
-    );
+    console.warn(`Module ${name} already exists in the manifest and will not be added again`);
   }
 }
 
@@ -171,9 +176,7 @@ if (!hasModule) {
     entry,
   });
 } else {
-  console.warn(
-    `Existing manifest module found with matching properties and will not be added again`
-  );
+  console.warn(`Existing manifest module found with matching properties and will not be added again`);
 }
 
 console.log("Saving manifest.json");

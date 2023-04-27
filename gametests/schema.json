@@ -1,80 +1,86 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "gametests",
-    "type": "object",
-    "properties": {
-      "buildOptions": {
-        "type": "object",
-        "default": {
-          "entryPoints": ["src/main.ts"],
-          "target": "es2020",
-          "format": "esm",
-          "bundle": true,
-          "minify": true
-        },
-        "additionalProperties": true,
-        "description": "Specifies build options for esbuild."
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "gametests",
+  "type": "object",
+  "properties": {
+    "buildOptions": {
+      "type": "object",
+      "default": {
+        "entryPoints": ["src/main.ts"],
+        "target": "es2020",
+        "format": "esm",
+        "bundle": true,
+        "minify": true
       },
-      "moduleUUID": {
-        "type": "string",
-        "description": "The UUID to place inside the manifest module."
-      },
-      "modules": {
-        "type": "array",
-        "default": ["@minecraft/server", "@minecraft/server-gametest"],
-        "description": "The gametest modules to inject as dependencies.",
-        "uniqueItems": true,
-        "items": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "@minecraft/server",
-                "@minecraft/server-ui",
-                "@minecraft/server-gametest",
-                "@minecraft/server-admin",
-                "@minecraft/server-net"
-              ],
-              "description": "Known gametest module"
-            },
-            {
-              "type": "string",
-              "enum": [
-                "@minecraft/server@1.0.0",
-                "@minecraft/server@1.1.0-beta",
-  
-                "@minecraft/server-ui@1.0.0-beta",
-  
-                "@minecraft/server-gametest@1.0.0-beta",
-  
-                "@minecraft/server-admin@1.0.0-beta",
-  
-                "@minecraft/server-net@1.0.0-beta"
-              ],
-              "description": "Known versioned gametest module"
-            },
-            {
-              "type": "string",
-              "description": "Unknown gametest module"
-            }
-          ]
-        }
-      },
-      "outfile": {
-        "type": "string",
-        "default": "BP/scripts/main.js",
-        "description": "The path to place the built script file at."
-      },
-      "moduleType": {
-        "type": "string",
-        "default": "script",
-        "description": "The manifest module type to inject"
-      },
-      "manifest": {
-        "type": "string",
-        "default": "BP/manifest.json",
-        "description": "The manifest to edit"
+      "additionalProperties": true,
+      "description": "Specifies build options for esbuild."
+    },
+    "moduleUUID": {
+      "type": "string",
+      "description": "The UUID to place inside the manifest module."
+    },
+    "modules": {
+      "type": "array",
+      "default": ["@minecraft/server", "@minecraft/server-gametest"],
+      "description": "The gametest modules to inject as dependencies.",
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "@minecraft/server",
+              "@minecraft/server-ui",
+              "@minecraft/server-gametest",
+              "@minecraft/server-admin",
+              "@minecraft/server-net"
+            ],
+            "description": "Known gametest module"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "@minecraft/server@1.1.0",
+              "@minecraft/server@1.0.0",
+              "@minecraft/server@1.2.0-beta",
+
+              "@minecraft/server@1.2.0",
+              "@minecraft/server@1.3.0-beta",
+
+              "@minecraft/server-ui@1.0.0-beta",
+
+              "@minecraft/server-ui@1.0.0",
+              "@minecraft/server-ui@1.1.0-beta",
+
+              "@minecraft/server-gametest@1.0.0-beta",
+
+              "@minecraft/server-admin@1.0.0-beta",
+
+              "@minecraft/server-net@1.0.0-beta"
+            ],
+            "description": "Known versioned gametest module"
+          },
+          {
+            "type": "string",
+            "description": "Unknown gametest module"
+          }
+        ]
       }
+    },
+    "outfile": {
+      "type": "string",
+      "default": "BP/scripts/main.js",
+      "description": "The path to place the built script file at."
+    },
+    "moduleType": {
+      "type": "string",
+      "default": "script",
+      "description": "The manifest module type to inject"
+    },
+    "manifest": {
+      "type": "string",
+      "default": "BP/manifest.json",
+      "description": "The manifest to edit"
     }
   }
-  
+}
