@@ -1,0 +1,10 @@
+{
+    "description": "Converts JSON5 and Hjson files into standard JSON files.",
+    "filters": [
+        {
+            "runWith": "nodejs",
+            "script": "./main.js",
+            "name": "Converting JSON5 and Hjson files into standard JSON files"
+        }
+    ]
+}

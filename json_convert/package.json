@@ -1,0 +1,17 @@
+{
+  "name": "json_convert",
+  "description": "Regolith filter for converting json5 and hjson files into standard json files",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Bedrock-OSS/regolith-filters.git",
+    "type": "git"
+  },
+  "version": "1.0.0",
+  "main": "./main.js",
+  "dependencies": {
+    "glob": "^7.1.7",
+    "hjson": "^3.2.2",
+    "json5": "^2.2.3",
+    "path": "^0.12.7"
+  }
+}

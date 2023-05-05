@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "json_convert",
+  "type": "object",
+  "properties": {
+    "include": {
+      "type": "array",
+      "default": [
+        "**/*.json5",
+        "**/*.hjson",
+        "**/*.json"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Specifies glob patterns, that will be used to find files to convert. By default, all json5, hjson, and json files will be converted."
+    },
+    "pretty": {
+      "type": "boolean",
+      "default": true,
+      "description": "Specifies whether the output json files should be pretty-printed. By default, the output json files will be pretty-printed."
+    }
+  }
+}
