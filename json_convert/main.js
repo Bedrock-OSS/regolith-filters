@@ -5,7 +5,11 @@ const Hjson = require("hjson");
 
 const defSettings = {
   include: ["**/*.json5", "**/*.hjson", "**/*.json"],
-  pretty: true
+  pretty: true,
+  extension_map: {
+    "json5": "json",
+    "hjson": "json"
+  }
 };
 
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
@@ -15,7 +19,7 @@ for (const pattern of settings.include) {
   glob(pattern, null, function (er, files) {
     files.forEach(function (file) {
       fs.readFile(file, "utf8", function (err, data) {
-        let resultName = file.substr(0, file.lastIndexOf(".")) + ".json";
+        let resultName = file.substr(0, file.lastIndexOf(".")) + "." + (settings.extension_map[file.substr(file.lastIndexOf(".") + 1)] || file.substr(file.lastIndexOf(".") + 1));
         console.log("Converting " + file + " into " + resultName);
         let output = null;
         try {

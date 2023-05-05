@@ -19,6 +19,15 @@
       "type": "boolean",
       "default": true,
       "description": "Specifies whether the output json files should be pretty-printed. By default, the output json files will be pretty-printed."
+    },
+    "extension_map": {
+      "type": "object",
+      "additionalProperties": true,
+      "default": {
+        "json5": "json",
+        "hjson": "json"
+      },
+      "description": "Specifies a map of file extensions to use for the output files. By default, json5 and hjson files will be converted to json files. All other files will keep their original extension."
     }
   }
 }
