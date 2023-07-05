@@ -5,6 +5,7 @@
   "scripts": {},
   "dependencies": {
     "esbuild": "^0.14.48",
+    "glob": "^10.3.1",
     "json5": "^2.2.1"
   }
 }
