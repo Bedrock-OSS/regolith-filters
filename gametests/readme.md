@@ -18,11 +18,32 @@ Install with: `regolith install gametests`. After that, you can place the filter
     "outfile": "BP/scripts/main.js",
     "manifest": "BP/manifest.json",
     "buildOptions": {
-      "entryPoints": ["data/gametests/main.ts"],
+      "entryPoints": ["data/gametests/src/main.ts"],
       "target": "es2020",
       "format": "esm",
       "bundle": true,
       "minify": true
+    }
+  }
+}
+```
+
+```json
+{
+  "filter": "gametests",
+  // Following settings are set by default
+  "settings": {
+    "moduleUUID": null,
+    "modules": ["mojang-gametest", "mojang-minecraft"],
+    "outfile": "BP/scripts/main.js",
+    "outdir": "BP/scripts",
+    "manifest": "BP/manifest.json",
+    "buildOptions": {
+      "entryPoints": ["data/gametests/src/**/*.ts"],
+      "target": "es2020",
+      "format": "esm",
+      "bundle": false,
+      "minify": false
     }
   }
 }
@@ -41,20 +62,21 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Settings
 
-| Setting          | Type                                                  | Default                                                 | Description                                                                                                       |
-| ---------------- | ----------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)            | Specifies build options for esbuild                                                                               |
-| `moduleUUID`   | string                                                | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                                      |
-| `modules`      | string[]                                              | ["@minecraft/server"]                                   | The gametest modules to inject as dependencies, follows the format '`<module>`@`<version>`' or '`<module>`' |
-| `outfile`      | string                                                | "BP/scripts/main.js"                                    | The path to place the built script file at                                                                        |
-| `moduleType`   | string                                                | "script"                                                | The manifest module type to inject                                                                                |
-| `manifest`     | string                                                | "BP/manifest.json"                                      | The manifest to edit                                                                                              |
+| Setting        | Type                                                     | Default                                                 | Description                                                                                                                                         |
+| -------------- | -------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)         | Specifies build options for esbuild                                                                                                                 |
+| `moduleUUID`   | string                                                   | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                                                                        |
+| `modules`      | string[]                                                 | ["@minecraft/server@1.0.0"]                             | The scripting modules to inject as dependencies, follows the format '`<module>`@`<version>`'                                                        |
+| `outfile`      | string                                                   | "BP/scripts/main.js"                                    | The path to place the built script file at when buildOptions.bundle is enabled. This property is also used as the entry point for the script module |
+| `outdir`       | string                                                   | "BP/scripts"                                            | The path to build to when buildOptions.bundle is disabled                                                                                           |
+| `moduleType`   | string                                                   | "script"                                                | The manifest module type to inject                                                                                                                  |
+| `manifest`     | string                                                   | "BP/manifest.json"                                      | The manifest to edit                                                                                                                                |
 
 #### Default Build Options
 
 ```js
 {
-    entryPoints: ["src/main.ts"],
+    entryPoints: ["data/gametests/src/main.ts"],
     target: "es2020",
     format: "esm",
     bundle: true,
@@ -63,6 +85,13 @@ The filter also has included support for importing JSON files using JSON5 parser
 ```
 
 ## Changelog
+
+### 1.4.0
+
+- Swapped from a hardcoded list of supported module versions to a pattern match
+- Made specifying module versions in settings required
+- Added glob support to `buildOptions.entryPoints`
+- Added support for `outdir`, used when `buildOptions.bundle` is disabled
 
 ### 1.3.3
 

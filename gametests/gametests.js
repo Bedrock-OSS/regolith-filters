@@ -1,48 +1,27 @@
 // @ts-check
 const fs = require("fs");
 const { randomUUID } = require("crypto");
+const { glob } = require("glob");
 
 const uuidFile = "data/gametests/uuid.txt";
-let defaultUUID = randomUUID();
+let defaultUUID = /** @type {string} */ (randomUUID());
 if (fs.existsSync(uuidFile)) {
   defaultUUID = fs.readFileSync(uuidFile).toString();
 } else {
   fs.writeFileSync(uuidFile, defaultUUID);
 }
 
-/** @type {{[module: string]: string[]}} */
-const knownVersions = {
-  "@minecraft/server": [
-    "1.1.0",
-    "1.0.0",
-    "1.2.0-beta",
-    /** Preview Only (1.20.0+) */
-    "1.2.0",
-    "1.3.0-beta",
-  ],
-  "@minecraft/server-ui": [
-    "1.0.0-beta",
-    /** Preview Only (1.20.0+) */
-    "1.0.0",
-    "1.1.0-beta",
-  ],
-  "@minecraft/server-net": ["1.0.0-beta"],
-  "@minecraft/server-admin": ["1.0.0-beta"],
-  "@minecraft/server-gametest": ["1.0.0-beta"],
-};
-
 const defSettings = {
   buildOptions: {
-    entryPoints: ["data/gametests/src/main.ts"],
     external: [""], // Empty string to mark as string[]
+    entryPoints: ["data/gametests/src/main.ts"],
     target: "es2020",
     format: "esm",
     bundle: true,
     minify: true,
   },
   moduleUUID: defaultUUID,
-  modules: ["@minecraft/server", "@minecraft/server-gametest"],
-  outfile: "BP/scripts/main.js",
+  modules: ["@minecraft/server@1.0.0"],
   moduleType: "script",
   manifest: "BP/manifest.json",
 };
@@ -53,9 +32,22 @@ defSettings.buildOptions.external = [];
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
 const settings = Object.assign({}, defSettings, argParsed);
 settings.buildOptions = Object.assign({}, defSettings.buildOptions, settings.buildOptions);
-settings.buildOptions.outfile = settings.outfile;
 
-const external = settings.buildOptions.external;
+function entryPathify(str) {
+  return str.split("/").slice(1).join("/");
+}
+const bundle = settings.buildOptions.bundle;
+let entry = "";
+const out = settings.outfile ?? "BP/scripts/main.js"
+settings.buildOptions.outfile = out;
+entry = entryPathify(out);
+if (!bundle) {
+  entry = entryPathify(out);
+  delete settings.buildOptions.outfile;
+  settings.buildOptions.outdir = settings.outdir ?? "BP/scripts";
+}
+
+const external = bundle ? settings.buildOptions.external : [];
 
 // Ensure types for settings
 const typeMap = {
@@ -105,24 +97,17 @@ if (!manifest.dependencies) manifest.dependencies = [];
 
 // Add script module dependencies to manifest
 for (let module of settings.modules) {
-  const match = module.match(/(@?[^@]+)(?:@(.+))?/);
-  if (!match || match[0].length !== module.length) {
+  const match = module.match(/(@[^@]+)@(.+)/);
+  if (!match) {
     throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
   }
   const name = match[1];
   let version = match[2];
 
-  const versions = knownVersions[name];
-  if (!versions) {
-    console.warn(`'${name}' is not a known module`);
-    if (!version) {
-      throw `Cannot find default version for unknown module '${name}'`;
-    }
-  } else if (!version) {
-    version = versions[0];
-    console.log(`Module version for '${name}' defaulted to '${version}'`);
-  } else if (!versions.includes(version)) {
-    console.warn(`${version} is not a known version for module '${name}'`);
+  if (!version) throw `No version provided for module '${name}'`;
+  const versionMatch = version.match(/\d+\.\d+\.\d+(?:-beta)?/);
+  if (!versionMatch || versionMatch[0] !== version) {
+    throw `Version '${version}' is not a valid module version`;
   }
 
   let exists = false;
@@ -153,8 +138,6 @@ for (let module of settings.modules) {
 if (!manifest.modules) manifest.modules = [];
 
 // Add script module to manifest
-const entry = settings.outfile.split("/").slice(1).join("/");
-
 let hasModule = false;
 if (
   manifest.modules.findIndex((v) => {
@@ -182,5 +165,9 @@ if (!hasModule) {
 console.log("Saving manifest.json");
 fs.writeFileSync(settings.manifest, JSON.stringify(manifest, null, 4));
 
-require("./moveFiles.js");
-require("./build.js").run(settings);
+glob(settings.buildOptions.entryPoints).then((paths) => {
+  settings.buildOptions.entryPoints = paths;
+  require("./moveFiles.js");
+  require("./build.js").run(settings);
+})
+
