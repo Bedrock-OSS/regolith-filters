@@ -24,6 +24,8 @@ const defSettings = {
   modules: ["@minecraft/server@1.0.0"],
   moduleType: "script",
   manifest: "BP/manifest.json",
+  outfile: "BP/scripts/main.js",
+  outdir: "BP/scripts"
 };
 // Reset external property so that it does not cause issues
 defSettings.buildOptions.external = [];
@@ -55,6 +57,7 @@ const typeMap = {
   moduleUUID: "string",
   modules: "array",
   outfile: "string",
+  outdir: "string",
   moduleType: "string",
   manifest: "string",
 };
