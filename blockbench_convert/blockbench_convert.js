@@ -61,7 +61,7 @@ function exportModel(data) {
     "minecraft:geometry": [entitymodel],
   };
   entitymodel.description = {
-    identifier: "geometry." + (data.geometry_name || "unknown"),
+    identifier: "geometry." + (data.model_identifier || "unknown"),
     texture_width: data.resolution.width || 16,
     texture_height: data.resolution.height || 16,
   };
