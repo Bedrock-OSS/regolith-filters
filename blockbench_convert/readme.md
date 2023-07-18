@@ -21,10 +21,14 @@ Any `.bbmodel` files located in your resource pack will be converted in-place in
 
 ## Changelog
 
-### 1.0.0
+### 1.1.1
 
-The first release of Blockbench Convert.
+Fixed incorrect identifier for models (#52)
 
 ### 1.1.0
 
-Adds the ability to export images.
+Added the ability to export images.
+
+### 1.0.0
+
+The first release of Blockbench Convert.
