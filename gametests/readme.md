@@ -86,6 +86,10 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Changelog
 
+### 1.4.2
+
+- Updated esbuild to 0.19.8
+
 ### 1.4.1
 
 - Added missing `outdir` and `outfile` defaults
