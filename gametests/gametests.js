@@ -1,7 +1,8 @@
 // @ts-check
 const fs = require("fs");
+const path = require("path");
 const { randomUUID } = require("crypto");
-const { glob } = require("glob");
+const { glob, globSync } = require("glob");
 
 const uuidFile = "data/gametests/uuid.txt";
 let defaultUUID = /** @type {string} */ (randomUUID());
@@ -34,6 +35,23 @@ defSettings.buildOptions.external = [];
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
 const settings = Object.assign({}, defSettings, argParsed);
 settings.buildOptions = Object.assign({}, defSettings.buildOptions, settings.buildOptions);
+
+// find all `*.esbuild.config.js` files in the project
+const configFiles = globSync("**/*.esbuild.config.js", {
+  ignore: ["**/node_modules/**"],
+  cwd: 'data/gametests',
+});
+
+for (const configFile of configFiles) {
+  const configPath = path.join(process.cwd(), 'data', 'gametests', configFile);
+  console.log(`Loading config file ${configFile}`);
+  const config = require(configPath).config;
+  if (!config) {
+    console.warn(`No config function exported found for ${configFile}`);
+    continue;
+  }
+  config(settings);
+}
 
 function entryPathify(str) {
   return str.split("/").slice(1).join("/");
