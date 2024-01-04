@@ -84,7 +84,26 @@ The filter also has included support for importing JSON files using JSON5 parser
 }
 ```
 
+## Modifying config with a JS file
+
+You can modify the settings of this filter by creating a file named `*.esbuild.config.js` in `data/gametests` folder. The file should export a function `config` that takes in the current settings. Other filters ran before this filter can place their config files in data/gametests folder and they will be loaded. The config files are loaded in alphabetical order, so if you want to override a setting, make sure your config file is loaded after the other filter's config file.
+
+```js
+// Example config file
+module.exports = {
+  config: (settings) => {
+    // Modify settings here
+    settings.buildOptions.entryPoints = ["data/gametests/extra_src/**/*.ts"];
+  },
+};
+```
+
 ## Changelog
+
+### 1.5.0
+
+- Added a way to modify settings with a JS file. The file should be named `*.esbuild.config.js` and export a function `config` that takes in the current settings. Other filters ran before this filter can place their config files in data/gametests folder and they will be loaded. The config files are loaded in alphabetical order, so if you want to override a setting, make sure your config file is loaded after the other filter's config file.
+- Added a setup script, that will try to install dependencies of the script API module.
 
 ### 1.4.2
 
