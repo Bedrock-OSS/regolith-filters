@@ -100,6 +100,10 @@ module.exports = {
 
 ## Changelog
 
+### 1.5.1
+
+- Updated the example script to use the new `@minecraft/server` and `@minecraft/server-gametest` versions
+
 ### 1.5.0
 
 - Added a way to modify settings with a JS file. The file should be named `*.esbuild.config.js` and export a function `config` that takes in the current settings. Other filters ran before this filter can place their config files in data/gametests folder and they will be loaded. The config files are loaded in alphabetical order, so if you want to override a setting, make sure your config file is loaded after the other filter's config file.

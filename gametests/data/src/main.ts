@@ -1,15 +1,14 @@
 import {
-  BlockLocation,
   system,
   TicksPerSecond,
   world,
 } from '@minecraft/server';
 import * as GameTest from '@minecraft/server-gametest';
 
-system.runSchedule(() => {
+system.runInterval(() => {
   let player_count = world.getAllPlayers().length;
   if (player_count > 0) {
-    world.say(`It has been ${system.currentTick / TicksPerSecond} seconds`);
+    world.sendMessage(`It has been ${system.currentTick / TicksPerSecond} seconds`);
   }
 }, 100);
 
@@ -17,8 +16,8 @@ function simpleMobTest(test: GameTest.Test) {
   const attackerId = 'fox';
   const victimId = 'chicken';
 
-  test.spawn(attackerId, new BlockLocation(3, 2, 3));
-  test.spawn(victimId, new BlockLocation(2, 2, 2));
+  test.spawn(attackerId, {x:3, y:2, z:3});
+  test.spawn(victimId, {x:2, y:2, z:2});
 
   test.assertEntityPresentInArea(victimId, true);
 
