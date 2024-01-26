@@ -100,6 +100,10 @@ module.exports = {
 
 ## Changelog
 
+### 1.5.2
+
+- Updated the default tsconfig to include `resolveJsonModule` set to `true`.
+
 ### 1.5.1
 
 - Updated the example script to use the new `@minecraft/server` and `@minecraft/server-gametest` versions
