@@ -4,8 +4,8 @@ const json5 = require("json5");
 const child_process = require("child_process");
 
 //Load config.json file
-// We are in .regolith/cache/filters/gametests and config is in root directory
-const rootPath = path.resolve(__dirname, "../../../../");
+// The path to the config.json directory is in the ROOT_DIR environment variable
+const rootPath = process.env.ROOT_DIR;
 const configPath = path.resolve(rootPath, "config.json");
 const config = json5.parse(fs.readFileSync(configPath, "utf-8"));
 
