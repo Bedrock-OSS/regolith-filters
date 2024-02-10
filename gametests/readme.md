@@ -99,6 +99,8 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.5.3
+Fixed the issue that caused the filter to fail when used in Regolith that uses the `use_project_app_data_storage` option (issue #53).
 
 ### 1.5.2
 
