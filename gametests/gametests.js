@@ -24,6 +24,7 @@ const defSettings = {
   moduleUUID: defaultUUID,
   modules: ["@minecraft/server@1.0.0"],
   moduleType: "script",
+  language: "javascript",
   manifest: "BP/manifest.json",
   outfile: "BP/scripts/main.js",
   outdir: "BP/scripts"
@@ -77,6 +78,7 @@ const typeMap = {
   outfile: "string",
   outdir: "string",
   moduleType: "string",
+  language: "string",
   manifest: "string",
 };
 const throwTypeError = (k) => {
@@ -176,6 +178,7 @@ if (!hasModule) {
     description: "Scripting module",
     type: settings.moduleType,
     uuid: settings.moduleUUID,
+    language: settings.language,
     version: [0, 0, 1],
     entry,
   });
