@@ -29,10 +29,10 @@ def list_textures(root_folder: Path):
 
 def generate_texture_list_file(root_folder: Path, textures):
     """
-    Generates root_folder/textures/texture_list.json
+    Generates root_folder/textures/textures_list.json
     """
     if len(textures) > 0:
-        with open(root_folder / "textures" / "texture_list.json", "w") as f:
+        with open(root_folder / "textures" / "textures_list.json", "w") as f:
             json.dump(textures, f, indent='\t')
 
 
