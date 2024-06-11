@@ -3,14 +3,34 @@ const fs = require("fs");
 const path = require("path");
 const { randomUUID } = require("crypto");
 const { glob, globSync } = require("glob");
+const json5 = require("json5");
 
-const uuidFile = "data/gametests/uuid.txt";
+const projectRoot = process.env.ROOT_DIR;
+
+let uuidFile = "data/gametests/uuid.txt";
+if (projectRoot) {
+  uuidFile = path.join(projectRoot, "packs", uuidFile);
+}
 let defaultUUID = /** @type {string} */ (randomUUID());
 if (fs.existsSync(uuidFile)) {
   defaultUUID = fs.readFileSync(uuidFile).toString();
 } else {
   fs.writeFileSync(uuidFile, defaultUUID);
 }
+
+const defLaunchConfig = {
+  mode: "listen",
+  port: 19144,
+};
+
+const launchConfigConsts = {
+  type: "minecraft-js",
+  request: "attach",
+  sourceMapRoot: "${workspaceFolder}/.regolith/tmp/BP/scripts/",
+  generatedSourceRoot: "${workspaceFolder}/.regolith/tmp/BP/scripts/",
+  localRoot: "${workspaceFolder}/packs/data/gametests/src/",
+  name: "(gametests) Debug with Minecraft",
+};
 
 const defSettings = {
   buildOptions: {
@@ -27,7 +47,8 @@ const defSettings = {
   language: "javascript",
   manifest: "BP/manifest.json",
   outfile: "BP/scripts/main.js",
-  outdir: "BP/scripts"
+  outdir: "BP/scripts",
+  debug_build: false,
 };
 // Reset external property so that it does not cause issues
 defSettings.buildOptions.external = [];
@@ -52,6 +73,56 @@ for (const configFile of configFiles) {
     continue;
   }
   config(settings);
+}
+
+if (settings.debug_build) {
+  settings.buildOptions.sourcemap = true;
+  // It is generated in the `.regolith/tmp/BP/scripts` directory, so we need to exit to the project root and back to the actual source
+  settings.buildOptions.sourceRoot = "../../../../packs/data/gametests";
+  if (projectRoot && fs.existsSync(path.join(projectRoot, ".vscode", "launch.json"))) {
+    const configPath = path.join(projectRoot, ".vscode", "launch.json");
+    const config = json5.parse(fs.readFileSync(configPath, "utf8"));
+    if (config && config.configurations) {
+      let found = false;
+      for (const c of config.configurations) {
+        if (c.name === "(gametests) Debug with Minecraft") {
+          let changed = ensureLaunchConfiguration(c);
+          if (changed) {
+            fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+          }
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        const newConfig = Object.assign({}, launchConfigConsts, defLaunchConfig);
+        ensureLaunchConfiguration(newConfig);
+        config.configurations.push(newConfig);
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+      }
+    }
+  }
+}
+
+function ensureLaunchConfiguration(config) {
+  let changed = false;
+  for (const k in launchConfigConsts) {
+    if (config[k] !== launchConfigConsts[k]) {
+      config[k] = launchConfigConsts[k];
+      changed = true;
+    }
+  }
+  if (settings.moduleUUID) {
+    if (config.targetModuleUuid !== settings.moduleUUID) {
+      config.targetModuleUuid = settings.moduleUUID;
+      changed = true;
+    }
+  } else if (config.targetModuleUuid) {
+    delete config.targetModuleUuid;
+    changed = true;
+  }
+
+  return changed;
 }
 
 function entryPathify(str) {
