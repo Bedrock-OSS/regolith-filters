@@ -164,6 +164,25 @@ for (let k in typeMap) {
   } else if (typeof settings[k] !== typeMap[k]) throwTypeError(k);
 }
 
+// Add script module dependencies to manifest
+const parsedModules = [];
+for (let module of settings.modules) {
+  const match = module.match(/(@[^@]+)@(.+)/);
+  if (!match) {
+    throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
+  }
+  const name = match[1];
+  let version = match[2];
+
+  if (!version) throw `No version provided for module '${name}'`;
+  const versionMatch = version.match(/\d+\.\d+\.\d+(?:-beta)?/);
+  if (!versionMatch || versionMatch[0] !== version) {
+    throw `Version '${version}' is not a valid module version`;
+  }
+  external.push(name);
+  parsedModules.push({ name, version });
+}
+
 if (!settings.disableManifestModification) {
   console.log("Modifying manifest.json");
   const manifestStr = fs.readFileSync("BP/manifest.json", "utf8");
@@ -192,19 +211,9 @@ if (!settings.disableManifestModification) {
   if (!manifest.dependencies) manifest.dependencies = [];
 
   // Add script module dependencies to manifest
-  for (let module of settings.modules) {
-    const match = module.match(/(@[^@]+)@(.+)/);
-    if (!match) {
-      throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
-    }
-    const name = match[1];
-    let version = match[2];
-
-    if (!version) throw `No version provided for module '${name}'`;
-    const versionMatch = version.match(/\d+\.\d+\.\d+(?:-beta)?/);
-    if (!versionMatch || versionMatch[0] !== version) {
-      throw `Version '${version}' is not a valid module version`;
-    }
+  for (let module of parsedModules) {
+    const name = module.name;
+    let version = module.version;
 
     let exists = false;
     if (
@@ -220,7 +229,6 @@ if (!settings.disableManifestModification) {
     }
 
     if (!exists) {
-      external.push(name);
       manifest.dependencies.push({
         module_name: name,
         version: version,
