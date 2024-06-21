@@ -48,7 +48,8 @@ const defSettings = {
   manifest: "BP/manifest.json",
   outfile: "BP/scripts/main.js",
   outdir: "BP/scripts",
-  debug_build: false,
+  debugBuild: false,
+  disableManifestModification: false,
 };
 // Reset external property so that it does not cause issues
 defSettings.buildOptions.external = [];
@@ -75,7 +76,7 @@ for (const configFile of configFiles) {
   config(settings);
 }
 
-if (settings.debug_build) {
+if (settings.debugBuild) {
   settings.buildOptions.sourcemap = true;
   // It is generated in the `.regolith/tmp/BP/scripts` directory, so we need to exit to the project root and back to the actual source
   settings.buildOptions.sourceRoot = "../../../../packs/data/gametests";
@@ -163,102 +164,104 @@ for (let k in typeMap) {
   } else if (typeof settings[k] !== typeMap[k]) throwTypeError(k);
 }
 
-console.log("Modifying manifest.json");
-const manifestStr = fs.readFileSync("BP/manifest.json", "utf8");
-/** @type {{
-  format_version: number; 
-  header: {
-    name: string;
-    description: string;
-    uuid: string;
-    version: [number, number, number];
-    min_engine_version: [number, number, number];
-  };
-  modules: {
-    description?: string; 
-    type: string; 
-    language?: string; 
-    entry?: string; 
-    uuid: string; 
-    version: string | [number, number, number];
-  }[]; 
-  dependencies: ({module_name: string; version: string} | {uuid: string; version: [number, number, number]})[];
-}} */
-const manifest = JSON.parse(manifestStr);
+if (!settings.disableManifestModification) {
+  console.log("Modifying manifest.json");
+  const manifestStr = fs.readFileSync("BP/manifest.json", "utf8");
+  /** @type {{
+    format_version: number; 
+    header: {
+      name: string;
+      description: string;
+      uuid: string;
+      version: [number, number, number];
+      min_engine_version: [number, number, number];
+    };
+    modules: {
+      description?: string; 
+      type: string; 
+      language?: string; 
+      entry?: string; 
+      uuid: string; 
+      version: string | [number, number, number];
+    }[]; 
+    dependencies: ({module_name: string; version: string} | {uuid: string; version: [number, number, number]})[];
+  }} */
+  const manifest = JSON.parse(manifestStr);
 
-// Ensure manifest contains dependencies array
-if (!manifest.dependencies) manifest.dependencies = [];
+  // Ensure manifest contains dependencies array
+  if (!manifest.dependencies) manifest.dependencies = [];
 
-// Add script module dependencies to manifest
-for (let module of settings.modules) {
-  const match = module.match(/(@[^@]+)@(.+)/);
-  if (!match) {
-    throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
+  // Add script module dependencies to manifest
+  for (let module of settings.modules) {
+    const match = module.match(/(@[^@]+)@(.+)/);
+    if (!match) {
+      throw "Invalid module provided in settings, please follow the format '<module>@<version>' or '<module>'";
+    }
+    const name = match[1];
+    let version = match[2];
+
+    if (!version) throw `No version provided for module '${name}'`;
+    const versionMatch = version.match(/\d+\.\d+\.\d+(?:-beta)?/);
+    if (!versionMatch || versionMatch[0] !== version) {
+      throw `Version '${version}' is not a valid module version`;
+    }
+
+    let exists = false;
+    if (
+      manifest.dependencies.findIndex((v) => {
+        if (typeof v.version !== "string") return;
+        //@ts-ignore
+        if (v.module_name !== name) return;
+        exists = true;
+        return v.version !== version;
+      }) !== -1
+    ) {
+      throw `Module '${name}' already exists in manifest with a different version`;
+    }
+
+    if (!exists) {
+      external.push(name);
+      manifest.dependencies.push({
+        module_name: name,
+        version: version,
+      });
+    } else {
+      console.warn(`Module ${name} already exists in the manifest and will not be added again`);
+    }
   }
-  const name = match[1];
-  let version = match[2];
 
-  if (!version) throw `No version provided for module '${name}'`;
-  const versionMatch = version.match(/\d+\.\d+\.\d+(?:-beta)?/);
-  if (!versionMatch || versionMatch[0] !== version) {
-    throw `Version '${version}' is not a valid module version`;
-  }
+  // Ensure manifest contains a modules array
+  if (!manifest.modules) manifest.modules = [];
 
-  let exists = false;
+  // Add script module to manifest
+  let hasModule = false;
   if (
-    manifest.dependencies.findIndex((v) => {
-      if (typeof v.version !== "string") return;
-      //@ts-ignore
-      if (v.module_name !== name) return;
-      exists = true;
-      return v.version !== version;
+    manifest.modules.findIndex((v) => {
+      if (v.type !== settings.moduleType) return;
+      hasModule = true;
+      if (v.uuid !== settings.moduleUUID) return true;
+      if (v.entry !== entry) return true;
     }) !== -1
   ) {
-    throw `Module '${name}' already exists in manifest with a different version`;
+    throw `Existing manifest module of type ${settings.moduleType} found with different properties`;
   }
 
-  if (!exists) {
-    external.push(name);
-    manifest.dependencies.push({
-      module_name: name,
-      version: version,
+  if (!hasModule) {
+    manifest.modules.push({
+      description: "Scripting module",
+      type: settings.moduleType,
+      uuid: settings.moduleUUID,
+      language: settings.language,
+      version: [0, 0, 1],
+      entry,
     });
   } else {
-    console.warn(`Module ${name} already exists in the manifest and will not be added again`);
+    console.warn(`Existing manifest module found with matching properties and will not be added again`);
   }
+
+  console.log("Saving manifest.json");
+  fs.writeFileSync(settings.manifest, JSON.stringify(manifest, null, 4));
 }
-
-// Ensure manifest contains a modules array
-if (!manifest.modules) manifest.modules = [];
-
-// Add script module to manifest
-let hasModule = false;
-if (
-  manifest.modules.findIndex((v) => {
-    if (v.type !== settings.moduleType) return;
-    hasModule = true;
-    if (v.uuid !== settings.moduleUUID) return true;
-    if (v.entry !== entry) return true;
-  }) !== -1
-) {
-  throw `Existing manifest module of type ${settings.moduleType} found with different properties`;
-}
-
-if (!hasModule) {
-  manifest.modules.push({
-    description: "Scripting module",
-    type: settings.moduleType,
-    uuid: settings.moduleUUID,
-    language: settings.language,
-    version: [0, 0, 1],
-    entry,
-  });
-} else {
-  console.warn(`Existing manifest module found with matching properties and will not be added again`);
-}
-
-console.log("Saving manifest.json");
-fs.writeFileSync(settings.manifest, JSON.stringify(manifest, null, 4));
 
 glob(settings.buildOptions.entryPoints).then((paths) => {
   settings.buildOptions.entryPoints = paths;

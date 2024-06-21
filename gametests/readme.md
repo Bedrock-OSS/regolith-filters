@@ -62,16 +62,17 @@ The filter also has included support for importing JSON files using JSON5 parser
 
 ## Settings
 
-| Setting        | Type                                                     | Default                                                 | Description                                                                                                                                         |
-|----------------|----------------------------------------------------------|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `buildOptions` | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)         | Specifies build options for esbuild                                                                                                                 |
-| `moduleUUID`   | string                                                   | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                                                                        |
-| `modules`      | string[]                                                 | ["@minecraft/server@1.0.0"]                             | The scripting modules to inject as dependencies, follows the format '``@``'                                                                         |
-| `outfile`      | string                                                   | "BP/scripts/main.js"                                    | The path to place the built script file at when buildOptions.bundle is enabled. This property is also used as the entry point for the script module |
-| `outdir`       | string                                                   | "BP/scripts"                                            | The path to build to when buildOptions.bundle is disabled                                                                                           |
-| `moduleType`   | string                                                   | "script"                                                | The manifest module type to inject                                                                                                                  |
-| `manifest`     | string                                                   | "BP/manifest.json"                                      | The manifest to edit                                                                                                                                |
-| `debug_build`  | boolean                                                  | false                                                   | Enables source maps and adds launch configuration to `.vscode/launch.json` if it exists                                                             |
+| Setting                       | Type                                                     | Default                                                 | Description                                                                                                                                         |
+|-------------------------------|----------------------------------------------------------|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `buildOptions`                | [buildOptions](https://esbuild.github.io/api/#build-api) | [Default Build Options](#default-build-options)         | Specifies build options for esbuild                                                                                                                 |
+| `moduleUUID`                  | string                                                   | Random UUID generated the first time the filter is ran. | The UUID to place inside the manifest module                                                                                                        |
+| `modules`                     | string[]                                                 | ["@minecraft/server@1.0.0"]                             | The scripting modules to inject as dependencies, follows the format '``@``'                                                                         |
+| `outfile`                     | string                                                   | "BP/scripts/main.js"                                    | The path to place the built script file at when buildOptions.bundle is enabled. This property is also used as the entry point for the script module |
+| `outdir`                      | string                                                   | "BP/scripts"                                            | The path to build to when buildOptions.bundle is disabled                                                                                           |
+| `moduleType`                  | string                                                   | "script"                                                | The manifest module type to inject                                                                                                                  |
+| `manifest`                    | string                                                   | "BP/manifest.json"                                      | The manifest to edit                                                                                                                                |
+| `debugBuild`                  | boolean                                                  | false                                                   | Enables source maps and adds launch configuration to `.vscode/launch.json` if it exists                                                             |
+| `disableManifestModification` | boolean                                                  | false                                                   | Disables adding dependencies and script module to the manifest.                                                                                     |
 
 #### Default Build Options
 
@@ -100,6 +101,9 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.6.1
+ - Renamed `debug_build` to `debugBuild` in the schema to match the other settings' name.
+ - Added `disableManifestModification` setting, that disables adding dependencies and script module to the manifest. The default value is `false`.
 ### 1.6.0
  - Added `debug_build` setting, that helps with connecting the debugger to the Minecraft client. When enabled, the build will include source maps and will add a correct launch configuration to `.vscode/launch.json` if it exists. The default value is `false`.
  - Fixed generating the module UUID, when `moduleUUID` is not set in the settings.

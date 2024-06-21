@@ -85,10 +85,15 @@
       "default": "BP/manifest.json",
       "description": "The manifest to edit"
     },
-    "debug_build": {
+    "debugBuild": {
       "type": "boolean",
       "default": false,
       "description": "Enables debug mode for the build. This will enable source maps and add debug launch configuration to `.vscode/launch.json`."
+    },
+    "disableManifestModification": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disables adding dependencies and script module to the manifest."
     }
   }
 }
