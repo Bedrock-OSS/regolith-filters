@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "type_gen",
+  "type": "object",
+  "properties": {
+    "outputFile": {
+      "type": "string",
+      "default": "Files.d.ts",
+      "description": "The output file to write the generated .d.ts file to. Defaults to Files.d.ts."
+    }
+  }
+}

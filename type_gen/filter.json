@@ -1,0 +1,10 @@
+{
+    "description": "Generates Files.d.ts file with some relevant constants from the current pack.",
+    "filters": [
+        {
+            "runWith": "nodejs",
+            "script": "./type_gen.js",
+            "name": "Generates Files.d.ts file with some relevant constants from the current pack"
+        }
+    ]
+}
