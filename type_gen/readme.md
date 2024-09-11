@@ -54,7 +54,7 @@ The output file to write the generated `.d.ts` file to. Defaults to `Files.d.ts`
 
 ### 1.0.1
 
-#55 Fixed issue where the filter would create an infinite loop when editing files in watch mode by @FrederoxDev
+[#55](https://github.com/Bedrock-OSS/regolith-filters/pull/55) Fixed issue where the filter would create an infinite loop when editing files in watch mode by [@FrederoxDev](https://github.com/FrederoxDev)
 
 ### 1.0.0
 
