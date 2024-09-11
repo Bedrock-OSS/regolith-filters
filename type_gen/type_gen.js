@@ -209,5 +209,13 @@ enumContent += createEnumFromJsonFiles('Particles', obj => getValueByPath(obj, '
 
 // Write to .d.ts file
 const outputFilePath = gametestsPath + 'src/' + settings.outputFile;
-fs.writeFileSync(outputFilePath, enumContent, 'utf8');
-console.log(`Enum written to ${path.relative(process.env.ROOT_DIR, outputFilePath)}`);
+
+let existingContent = '';
+if (fs.existsSync(outputFilePath)) {
+  existingContent = fs.readFileSync(outputFilePath, 'utf8');
+}
+
+if (existingContent !== enumContent) {
+  fs.writeFileSync(outputFilePath, enumContent, 'utf8');
+  console.log(`Enum written to ${path.relative(process.env.ROOT_DIR, outputFilePath)}`);
+}
