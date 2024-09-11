@@ -52,6 +52,10 @@ The output file to write the generated `.d.ts` file to. Defaults to `Files.d.ts`
 
 ## Changelog
 
+### 1.0.1
+
+#55 Fixed issue where the filter would create an infinite loop when editing files in watch mode by @FrederoxDev
+
 ### 1.0.0
 
 The first release of Type Gen.
