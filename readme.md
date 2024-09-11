@@ -7,7 +7,7 @@ This repository contains the standard-library filters for the Regolith Addon Com
 
 ## What are Filters?
 
-Filters are scripts which are ran during the compilation/packaging of your Bedrock Addon. You can learn more [here](https://bedrock-oss.github.io/regolith/docs/installing-filters).
+Filters are scripts which are ran during the compilation/packaging of your Bedrock Addon. You can learn more [here](https://bedrock-oss.github.io/regolith/guide/filters).
 
 ## How does this Repository work?
 
