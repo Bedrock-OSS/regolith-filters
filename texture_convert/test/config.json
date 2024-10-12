@@ -30,7 +30,7 @@
 					{
             "filter": "filter_tester",
             "settings": {
-              "errors_stop_execution": true
+              "errors_stop_execution": false
             }
           }
 				]
