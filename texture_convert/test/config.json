@@ -1,30 +1,39 @@
 {
-	"name": "filter_tester example",
 	"author": "Bedrock-OSS",
+	"name": "texture_convert_test",
 	"packs": {
 		"behaviorPack": "./packs/BP",
 		"resourcePack": "./packs/RP"
 	},
 	"regolith": {
+		"dataPath": "./data",
+		"filterDefinitions": {
+			"filter_tester": {
+				"url": "github.com/Bedrock-OSS/regolith-filters",
+				"version": "1.0.0"
+			},
+			"texture_convert": {
+				"runWith": "python",
+				"script": "../texture_convert.py"
+			}
+		},
 		"profiles": {
-			"dev": {
+			"default": {
+				"export": {
+					"readOnly": true,
+					"target": "local"
+				},
 				"filters": [
 					{
-						"runWith": "python",
-						"script": "../texture_convert.py"
+						"filter": "texture_convert"
 					},
 					{
-						"filter": "filter_tester",
-						"settings": {
-							"errors_stop_execution": true
-						}
-					}
-				],
-				"export": {
-					"target": "local",
-					"readOnly": true
-				},
-				"dataPath": "./data"
+            "filter": "filter_tester",
+            "settings": {
+              "errors_stop_execution": false
+            }
+          }
+				]
 			}
 		}
 	}

@@ -30,6 +30,9 @@ This filter will check the project for any `.pdn` files, and will convert them i
 
 This allows you to use `.pdn` files directly inside of your addon, without converting them manually whenever you make a change.
 
+##  GIF Convert
+`.gif` files are converted into vertical sprite sheets (`.png` files) with the same name and file location.
+
 ## Using the Filter
 
 ```json
@@ -39,6 +42,9 @@ This allows you to use `.pdn` files directly inside of your addon, without conve
 ```
 
 ## Changelog
+
+### 1.2.0
+Added support for `.gif` files.
 
 ### 1.1.1
 
