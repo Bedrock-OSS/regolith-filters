@@ -107,7 +107,18 @@ def main():
 
     # Detect settings, and set defaults if not provided.
     overwrite = settings.get("overwrite", False)
-    languages = settings.get("languages", ["en_US.lang"])
+    
+    # Handle backward compatibility
+    if "languages" in settings:
+        languages = settings["languages"]
+    else:
+        language = settings.get("language", "en_US.lang")
+        if isinstance(language, str):
+            languages = [language]
+            print("Warning: The 'language' setting is deprecated in the latest version. Please use 'languages' instead for future configurations.")
+        else:
+            raise ValueError("The 'language' setting must be a string if 'languages' is not provided.")
+    
     sort = settings.get("sort", False)
     ignored_namespaces = settings.get("ignored_namespaces", ['minecraft'])
     project = Project("./BP", "./RP")

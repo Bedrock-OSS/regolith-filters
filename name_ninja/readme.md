@@ -42,7 +42,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 {
 	"filter": "name_ninja",
 	"settings": {
-		"languages": ["en_US.lang", "es_GB.lang"],
+		"languages": ["en_US.lang", "en_GB.lang"],
 		"overwrite": true,
 		"sort": true,
 		"ignored_identifiers": ["minecraft"],
