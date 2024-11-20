@@ -42,7 +42,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 {
 	"filter": "name_ninja",
 	"settings": {
-		"language": "en_GB.lang",
+		"languages": ["en_US.lang", "es_GB.lang"],
 		"overwrite": true,
 		"sort": true,
 		"ignored_identifiers": ["minecraft"],
@@ -70,12 +70,12 @@ Here is a filter, with all options fully defined. These options will be explaine
 }
 ```
 
-| Property  | Default    | Description                                                                                         |
-|-----------|------------|-----------------------------------------------------------------------------------------------------|
-| language  | en_US.lang | The language file where you want to place the translations.                                         |
-| overwrite | False      | Whether languages codes should overwrite/replace translations already defined in the language file. |
-| sort      | False      | Whether to sort the language file, on export. Useful for grouping assets.                           |
-| ignored_namespaces | ['minecraft'] | A list of namespaces which you would like to ignore. |
+| Property           | Default          | Description                                                                                         |
+|--------------------|------------------|-----------------------------------------------------------------------------------------------------|
+| languages          | ["en_US.lang"]   | A list of language files where you want to place the translations. Supports multiple languages.     |
+| overwrite          | False            | Whether languages codes should overwrite/replace translations already defined in the language file. |
+| sort               | False            | Whether to sort the language file, on export. Useful for grouping assets.                           |
+| ignored_namespaces | ['minecraft']    | A list of namespaces which you would like to ignore.                                                |
 
 As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs` are always the same. The approach simply gives you more flexibility per asset-type.
 
@@ -118,3 +118,8 @@ The first release of Name Ninja
 
  - Fixed issue where it wouldn't create a the lang file if missing
  - Fixed issue where it would fail if an identifier did not exist
+
+### 1.2.4
+
+ - Added support for multiple language files via the `languages` setting.
+ - Updated `readme.md`

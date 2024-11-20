@@ -25,10 +25,13 @@
         }
     },
     "properties": {
-        "language": {
-            "type":"string",
-            "default": "en_US.lang",
-            "description": "The language file where you want to place the translations."
+        "languages": {
+            "type": "array",
+            "default": ["en_US.lang"],
+            "description": "A list of language files where you want to place the translations.",
+            "items": {
+                "type": "string"
+            }
         },
         "overwrite": {
             "type": "boolean",
