@@ -111,6 +111,11 @@ def main():
     # Handle backward compatibility
     if "languages" in settings:
         languages = settings["languages"]
+        if isinstance(languages, str):
+            languages = [languages]
+            print("Warning: The 'languages' setting should be an array of strings. A single string was provided and automatically converted to a list.")
+        elif not isinstance(languages, list):
+            raise ValueError("The 'languages' setting must be a list of strings.")
     else:
         language = settings.get("language", "en_US.lang")
         if isinstance(language, str):
