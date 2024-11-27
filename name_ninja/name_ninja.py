@@ -107,7 +107,23 @@ def main():
 
     # Detect settings, and set defaults if not provided.
     overwrite = settings.get("overwrite", False)
-    language = settings.get("language", "en_US.lang")
+    
+    # Handle backward compatibility
+    if "languages" in settings:
+        languages = settings["languages"]
+        if isinstance(languages, str):
+            languages = [languages]
+            print("Warning: The 'languages' setting should be an array of strings. A single string was provided and automatically converted to a list.")
+        elif not isinstance(languages, list):
+            raise ValueError("The 'languages' setting must be a list of strings.")
+    else:
+        language = settings.get("language", "en_US.lang")
+        if isinstance(language, str):
+            languages = [language]
+            print("Warning: The 'language' setting is deprecated in the latest version. Please use 'languages' instead for future configurations.")
+        else:
+            raise ValueError("The 'language' setting must be a string if 'languages' is not provided.")
+    
     sort = settings.get("sort", False)
     ignored_namespaces = settings.get("ignored_namespaces", ['minecraft'])
     project = Project("./BP", "./RP")
@@ -121,19 +137,21 @@ def main():
     translations.extend(gather_translations(AssetType.BLOCK, behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", ignored_namespaces))
     translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
 
-    try:
-        language_file = resource_pack.get_language_file("texts/" + language)
-    except AssetNotFoundError:
-        print(f"Warning: {language} file not found, creating...")
-        Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
-        open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
-        language_file = LanguageFile(filepath=f'texts/{language}', pack=resource_pack)
+    for language in languages:
+        try:
+            language_file = resource_pack.get_language_file(f"texts/{language}")
+        except AssetNotFoundError:
+            print(f"Warning: {language} file not found, creating...")
+            Path(os.path.join(resource_pack.input_path, 'texts')).mkdir(parents=True, exist_ok=True)
+            open(os.path.join(resource_pack.input_path, 'texts', language), 'a').close()
+            language_file = LanguageFile(filepath=f'texts/{language}', pack=resource_pack)
 
-    for translation in translations:
-        language_file.add_translation(translation, overwrite = overwrite)
+        for translation in translations:
+            language_file.add_translation(translation, overwrite=overwrite)
 
-    if sort:
-        language_file.translations.sort(key=lambda t: t.key)
+        if sort:
+            language_file.translations.sort(key=lambda t: t.key)
+
     project.save()
 
 if __name__ == "__main__":
