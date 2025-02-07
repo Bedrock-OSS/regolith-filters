@@ -90,6 +90,11 @@
       "default": false,
       "description": "Enables debug mode for the build. This will enable source maps and add debug launch configuration to `.vscode/launch.json`."
     },
+    "injectSourceMapping": {
+      "type": "boolean",
+      "default": false,
+      "description": "Injects source mapping into a compiled script file. Requires debugBuild to be enabled."
+    },
     "disableManifestModification": {
       "type": "boolean",
       "default": false,
