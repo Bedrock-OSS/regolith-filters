@@ -102,6 +102,8 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.7.1
+ - Improved cleaning the path of the source file.
 ### 1.7.0
  - Added `injectSourceMapping` setting, that injects source mapping into a compiled script file. Requires debugBuild to be enabled. The default value is `false`.
  - Updated list of modules in the schema.
