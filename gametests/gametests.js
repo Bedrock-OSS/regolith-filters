@@ -303,9 +303,10 @@ async function generateSourceMapping() {
 
       // Remove the unwanted prefix from the source path.
       let source = mappingEntry.source;
-      const prefix = "../../../../data/gametests/";
-      if (source.startsWith(prefix)) {
-        source = source.slice(prefix.length);
+      // Get index of '/data/gametests/' and slice the string from the end of it.
+      const prefix = "/data/gametests/";
+      if (source.indexOf(prefix) !== -1) {
+        source = source.slice(source.indexOf(prefix) + prefix.length);
       }
 
       // For each generated line, record only the first mapping encountered.
