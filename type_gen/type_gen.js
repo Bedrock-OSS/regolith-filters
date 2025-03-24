@@ -53,11 +53,11 @@ function createEnumDeclaration(enumName, keyValuePairs) {
   if (Object.keys(keyValuePairs).length === 0) {
     return '';
   }
-  let enumContent = `export const enum ${enumName} {\n`;
+  let enumContent = `export const enum ${enumName} {\r\n`;
   for (const [key, value] of Object.entries(keyValuePairs)) {
-    enumContent += `    ${key} = "${value}",\n`;
+    enumContent += `    ${key} = "${value}",\r\n`;
   }
-  enumContent += `}\n\n`;
+  enumContent += `}\r\n\r\n`;
 
   return enumContent;
 }
