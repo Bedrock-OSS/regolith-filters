@@ -72,6 +72,7 @@ The filter also has included support for importing JSON files using JSON5 parser
 | `moduleType`                  | string                                                   | "script"                                                | The manifest module type to inject                                                                                                                  |
 | `manifest`                    | string                                                   | "BP/manifest.json"                                      | The manifest to edit                                                                                                                                |
 | `debugBuild`                  | boolean                                                  | false                                                   | Enables source maps and adds launch configuration to `.vscode/launch.json` if it exists                                                             |
+| `injectSourceMapping`                  | boolean                                                  | false                                                   | Injects source mapping into a compiled script file. Requires debugBuild to be enabled.                                                             |
 | `disableManifestModification` | boolean                                                  | false                                                   | Disables adding dependencies and script module to the manifest.                                                                                     |
 
 #### Default Build Options
@@ -101,6 +102,11 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.7.1
+ - Improved cleaning the path of the source file.
+### 1.7.0
+ - Added `injectSourceMapping` setting, that injects source mapping into a compiled script file. Requires debugBuild to be enabled. The default value is `false`.
+ - Updated list of modules in the schema.
 ### 1.6.1
  - Renamed `debug_build` to `debugBuild` in the schema to match the other settings' name.
  - Added `disableManifestModification` setting, that disables adding dependencies and script module to the manifest. The default value is `false`.

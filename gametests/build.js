@@ -27,7 +27,8 @@ const json5Plugin = (options) => {
 };
 
 module.exports.run = function (settings) {
-  require("esbuild")
+  // Return the promise so that callers can await the build's completion.
+  return require("esbuild")
     .build({ ...settings.buildOptions, plugins: [json5Plugin()] })
     .catch((err) => {
       console.error(err.message);

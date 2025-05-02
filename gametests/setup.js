@@ -6,6 +6,10 @@ const child_process = require("child_process");
 //Load config.json file
 // The path to the config.json directory is in the ROOT_DIR environment variable
 const rootPath = process.env.ROOT_DIR;
+if (!rootPath) {
+  console.warn("ROOT_DIR environment variable not found");
+  return;
+}
 const configPath = path.resolve(rootPath, "config.json");
 const config = json5.parse(fs.readFileSync(configPath, "utf-8"));
 
