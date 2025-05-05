@@ -4,12 +4,16 @@ const path = require("path");
 const { randomUUID } = require("crypto");
 const { glob, globSync } = require("glob");
 const json5 = require("json5");
+const { spawnSync } = require("child_process");
 
 const projectRoot = process.env.ROOT_DIR;
 
 let uuidFile = "data/gametests/uuid.txt";
 if (projectRoot) {
   uuidFile = path.join(projectRoot, "packs", uuidFile);
+} else {
+  console.error("No project root found");
+  process.exit(1);
 }
 let defaultUUID = /** @type {string} */ (randomUUID());
 if (fs.existsSync(uuidFile)) {
@@ -374,6 +378,21 @@ async function adjustSourceMap(mapPath, lineOffset) {
     fs.writeFileSync(mapPath, newMap, 'utf8');
     console.log(`Source map adjusted by an offset of ${lineOffset} and written to ${mapPath}`);
   });
+}
+
+function runInShell(cmd, cwd, showStdio) {
+  return spawnSync("cmd", ["/c", cmd], {
+    cwd: cwd,
+    stdio: showStdio ? 'inherit' : undefined
+  })
+}
+
+// Check if packages need to be installed
+const result = runInShell("npm ls --production --depth=0 --silent", path.join(process.cwd(), "data", "gametests"), false);
+if (result.status === 1) {
+  console.log("Installing packages...");
+  runInShell("npm i", path.join(process.cwd(), "data", "gametests"), true);
+  runInShell("npm i", path.join(projectRoot, "packs", "data", "gametests"), true);
 }
 
 glob(settings.buildOptions.entryPoints).then(async (paths) => {
