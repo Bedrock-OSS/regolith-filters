@@ -78,7 +78,7 @@ function loadLangFile(filePath) {
       isSyncing = true;
     } else if (line.startsWith('## #endsync')) {
       isSyncing = false;
-    } else if (isSyncing) {
+    } else if (isSyncing && line.trim().length > 0 && line.trim().charAt(0) !== '#') {
       syncedLines.push(line);
     }
   }
