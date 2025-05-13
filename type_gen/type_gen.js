@@ -54,7 +54,8 @@ function createEnumDeclaration(enumName, keyValuePairs) {
     return '';
   }
   let enumContent = `export const enum ${enumName} {\r\n`;
-  for (const [key, value] of Object.entries(keyValuePairs)) {
+  const sortedEntries = Object.entries(keyValuePairs).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
+  for (const [key, value] of sortedEntries) {
     enumContent += `    ${key} = "${value}",\r\n`;
   }
   enumContent += `}\r\n\r\n`;
