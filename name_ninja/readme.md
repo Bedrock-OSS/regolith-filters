@@ -87,6 +87,9 @@ As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs`
 | postfix   | ""      | A postfix that is appended to the end of the translation. Useful for resetting color codes from your names.                                 |
 
 # Changelog
+### 1.3.1
+- Updated 'reticulator' to version 1.0.2
+
 ### 1.3.0
 - Added `spawn_egg_name` property to behavior files, so that it can be used to set the name of the entity's spawn egg.
 - Added `"from_entity_name"` option that can be used for `auto_name` in spawn egg configuration. This property allows generating spawn egg names wit prefix and postfix based on the `name` property set in the entity file.
