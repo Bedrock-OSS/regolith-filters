@@ -28,7 +28,9 @@ for (const pattern of settings.include) {
           try {
             output = JSON5.parse(data);
           } catch(e) {
-            console.log("Failed to parse " + file);
+            console.error("Failed to parse " + file);
+            console.error(e);
+            process.exit(1);
             return;
           }
         }
