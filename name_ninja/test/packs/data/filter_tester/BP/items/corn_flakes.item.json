@@ -1,0 +1,11 @@
+{
+  "format_version": "1.17.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "name_ninja:corn_flakes"
+    },
+    "components": {
+      "minecraft:max_stack_size": 16
+    }
+  }
+}

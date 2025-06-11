@@ -1,0 +1,20 @@
+{
+  "format_version": "1.8.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "name_ninja:puma",
+      "materials": { "default": "cat" },
+      "textures": {
+        "default": "textures/entity/cat/persian"
+      },
+      "geometry": {
+        "default": "geometry.cat"
+      },
+      "render_controllers": [ "controller.render.default" ],
+      "spawn_egg": {
+        "texture": "spawn_egg",
+        "texture_index": 53
+      }
+    }
+  }
+}

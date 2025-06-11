@@ -1,0 +1,14 @@
+pack.name=§bName Ninja Test	##
+pack.description=Test Pack for the name_ninja Regolith Filter	##
+item.name_ninja:bell_pepper=§3Green Bell Pepper	##
+tile.name_ninja:regolith.name=§2Regolith Shards	##
+entity.name_ninja:house_cat.name=Kitty Cat	##Custom Comments must be allowed
+item.spawn_egg.entity.name_ninja:house_cat.name=§4House Cat Spawn Egg§r	##
+item.spawn_egg.entity.name_ninja:puma.name=§3Mountain Lion	##
+item.spawn_egg.entity.name_ninja:spotted_leopard.name=§4Spotted Leopard Spawn Egg§r	##
+item.name_ninja:corn_flakes=Tasty Corn Flakes	##
+item.name_ninja:pecan.name=§3Pecan§r	##
+tile.name_ninja:limestone.name=§2Limestone§r	##
+tile.name_ninja:shale.name=Sharp Shale	##
+entity.name_ninja:puma.name=§3Mountain Lion	##
+entity.name_ninja:spotted_leopard.name=§1Spotted Leopard§r	##

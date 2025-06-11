@@ -1,0 +1,27 @@
+{
+    "format_version": [1, 1, 0],
+    "sirlich:shale": {
+        "textures": {
+            "up": "shale",
+            "down": "shale",
+            "side": "shale"
+        },
+        "sound": "grass"
+    },
+    "sirlich:regolith": {
+        "textures": {
+            "up": "shale",
+            "down": "shale",
+            "side": "shale"
+        },
+        "sound": "grass"
+    },
+    "sirlich:limestone": {
+        "textures": {
+            "up": "limestone",
+            "down": "limestone",
+            "side": "limestone"
+        },
+        "sound": "grass"
+    }
+}

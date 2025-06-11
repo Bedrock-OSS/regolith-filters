@@ -1,65 +1,63 @@
 {
-    "name": "name_ninja_test",
-    "author": "SirLich",
-    "packs": {
-        "behaviorPack": "./packs/BP",
-        "resourcePack": "./packs/RP"
-    },
-    "regolith": {
-        "dataPath": "./packs/data",
-        "profiles": {
-            "default": {
-                "_comment": "Export the test addon into your com.mojang folder for testing.",
-                "filters": [
-                    {
-                        "filter": "local_name_ninja",
-                        "settings": {
-                            "languages": ["en_US.lang"],
-                            "overwrite": false,
-                            "entities": {
-                                "auto_name": true,
-                                "prefix": "§1",
-                                "postfix": "§r"
-                            },
-                            "blocks": {
-                                "auto_name": true,
-                                "prefix": "§2",
-                                "postfix": "§r"
-                            },
-                            "items": {
-                                "auto_name": true,
-                                "prefix": "§3",
-                                "postfix": "§r"
-                            },
-                            "spawn_eggs": {
-                                "auto_name": true,
-                                "prefix": "§4",
-                                "postfix": " Spawn Egg§r"
-                            }
-                        }
-                    }
-                ],
-                "export": {
-                    "target": "development"
-                }
-            },
-            "local": {
-                "_comment": "Export the test addon locally, for quick visual analysis of the results.",
-                "filters": [
-                    {
-                        "profile": "default"
-                    }
-                ],
-                "export": {
-                    "target": "local"
-                }
-            }
-        },
-        "filterDefinitions": {
-            "local_name_ninja": {
-                "runWith": "python",
-                "script": "../name_ninja.py"
-            }
-        }
-    }
+	"author": "SirLich",
+	"name": "name_ninja_test",
+	"packs": {
+		"behaviorPack": "./packs/BP",
+		"resourcePack": "./packs/RP"
+	},
+	"regolith": {
+		"dataPath": "./packs/data",
+		"filterDefinitions": {
+			"filter_tester": {
+				"url": "github.com/Bedrock-OSS/regolith-filters",
+				"version": "1.0.0"
+			},
+			"local_name_ninja": {
+				"runWith": "python",
+				"script": "../name_ninja.py"
+			}
+		},
+		"profiles": {
+			"default": {
+				"export": {
+					"target": "local"
+				},
+				"filters": [
+					{
+						"filter": "local_name_ninja",
+						"settings": {
+							"blocks": {
+								"auto_name": true,
+								"postfix": "§r",
+								"prefix": "§2"
+							},
+							"entities": {
+								"auto_name": true,
+								"postfix": "§r",
+								"prefix": "§1"
+							},
+							"items": {
+								"auto_name": true,
+								"postfix": "§r",
+								"prefix": "§3"
+							},
+							"languages": ["en_US.lang"],
+							"overwrite": false,
+							"spawn_eggs": {
+								"auto_name": true,
+								"postfix": " Spawn Egg§r",
+								"prefix": "§4"
+							}
+						}
+					},
+					{
+						"filter": "filter_tester",
+						"settings": {
+							"errors_stop_execution": false
+						}
+					}
+				]
+			}
+		}
+	}
 }
