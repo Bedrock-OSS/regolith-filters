@@ -44,7 +44,7 @@
 							"languages": ["en_US.lang"],
 							"overwrite": false,
 							"spawn_eggs": {
-								"auto_name": true,
+								"auto_name": "from_entity_name",
 								"postfix": " Spawn Egg§r",
 								"prefix": "§4"
 							}

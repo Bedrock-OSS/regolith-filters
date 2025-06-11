@@ -6,7 +6,7 @@ identifier. See 'readme.md' for more information.
 
 import sys
 import json
-from typing import List
+from typing import List, NamedTuple
 from enum import Enum
 
 from reticulator import *
@@ -16,6 +16,17 @@ class AssetType(Enum):
     ITEM = 2
     BLOCK = 3
     ENTITY = 4
+
+class NameJsonPath(NamedTuple):
+    """Describes a jsonpath candidate when gathering translations.
+
+    path: the JSONPath to read
+    should_pop: whether the value should be removed from the underlying JSON once read
+    add_affixes: if True, the gathered value will be wrapped with prefix/postfix.
+    """
+    path: str
+    should_pop: bool = False
+    add_affixes: bool = False
 
 def generate_localization_key(asset_type: AssetType, asset: JsonResource):
     """
@@ -50,7 +61,7 @@ def format_name(name: str):
     """
     return name.split(":")[1].replace("_", " ").title()
 
-def gather_translations(asset_type: str, assets: List[JsonFileResource], settings: dict, name_jsonpath: str, ignored_namespaces) -> List[Translation]:
+def gather_translations(asset_type: str, assets: List[JsonFileResource], settings: dict, name_jsonpaths: List[NameJsonPath], ignored_namespaces) -> List[Translation]:
     """
     Gathers translations from the behavior pack.
     """
@@ -70,29 +81,45 @@ def gather_translations(asset_type: str, assets: List[JsonFileResource], setting
         # Skip assets that are in ignored namespaces (e.g. minecraft:zombie)
         if identifier.split(':')[0] in ignored_namespaces:
             continue
-        
+
         localization_key = generate_localization_key(asset_type, asset)
 
         # Allow for generate_localization_key to return None (skip)
         if localization_key is None:
             continue
 
-        # Try/except to handle the case where the asset doesn't have a name.
-        # If this happens, we optionally name the entity automatically.
-        try:
-            # Since we process spawn_eggs before entities, we should ensure that spawn_eggs don't delete the name key
-            if asset_type == AssetType.SPAWN_EGG:
-                localization_value = asset.get_jsonpath(name_jsonpath)
-            else:
-                localization_value = asset.pop_jsonpath(name_jsonpath)
-        except AssetNotFoundError:
-            if auto_name:
-                localization_value = prefix + format_name(identifier) + postfix
-            else:
-                continue
-        
+        # Try loading localization_value from JSON paths
+        localization_value = None
+        for jp in name_jsonpaths:
+            path = jp.path
+            should_pop = jp.should_pop
+
+            try:
+                # Pop the value if requested
+                if should_pop:
+                    localization_value = asset.pop_jsonpath(path)
+                else:
+                    localization_value = asset.get_jsonpath(path)
+                # Add affixes if requested
+                if localization_value is not None and jp.add_affixes:
+                    localization_value = prefix + localization_value + postfix
+                # Found a valid name, break
+                break
+            except AssetNotFoundError:
+                pass
+
+        # Try auto_naming using identifier
+        if (
+                localization_value is None and
+                auto_name in [True, "from_entity_name"]):
+            localization_value = prefix + format_name(identifier) + postfix
+
+        # If after all strategies no localization value was resolved, skip this asset.
+        if localization_value is None:
+            continue
+
         translations.append(Translation(localization_key, localization_value, ""))
-    
+
     return translations
 
 def main():
@@ -107,7 +134,7 @@ def main():
 
     # Detect settings, and set defaults if not provided.
     overwrite = settings.get("overwrite", False)
-    
+
     # Handle backward compatibility
     if "languages" in settings:
         languages = settings["languages"]
@@ -123,7 +150,7 @@ def main():
             print("Warning: The 'language' setting is deprecated in the latest version. Please use 'languages' instead for future configurations.")
         else:
             raise ValueError("The 'language' setting must be a string if 'languages' is not provided.")
-    
+
     sort = settings.get("sort", False)
     ignored_namespaces = settings.get("ignored_namespaces", ['minecraft'])
     project = Project("./BP", "./RP")
@@ -132,10 +159,50 @@ def main():
 
     translations = []
 
-    translations.extend(gather_translations(AssetType.SPAWN_EGG, behavior_pack.entities, settings.get("spawn_eggs", {}), "minecraft:entity/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.ITEM, behavior_pack.items, settings.get("items", {}), "minecraft:item/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.BLOCK, behavior_pack.blocks, settings.get("blocks", {}), "minecraft:block/description/name", ignored_namespaces))
-    translations.extend(gather_translations(AssetType.ENTITY, behavior_pack.entities, settings.get("entities", {}), "minecraft:entity/description/name", ignored_namespaces))
+    translations.extend(
+        gather_translations(
+            AssetType.SPAWN_EGG,
+            behavior_pack.entities,
+            settings.get("spawn_eggs", {}),
+            [
+                # First try `spawn_egg_name` and pop it if found (no affixes)
+                NameJsonPath("minecraft:entity/description/spawn_egg_name", True, False),
+                # Fallback to entity name; add affixes only when auto_name == "from_entity_name"
+                NameJsonPath("minecraft:entity/description/name", False, settings.get("spawn_eggs", {}).get("auto_name") == "from_entity_name"),
+            ],
+            ignored_namespaces,
+        )
+    )
+
+    translations.extend(
+        gather_translations(
+            AssetType.ITEM,
+            behavior_pack.items,
+            settings.get("items", {}),
+            [NameJsonPath("minecraft:item/description/name", True, False)],
+            ignored_namespaces,
+        )
+    )
+
+    translations.extend(
+        gather_translations(
+            AssetType.BLOCK,
+            behavior_pack.blocks,
+            settings.get("blocks", {}),
+            [NameJsonPath("minecraft:block/description/name", True, False)],
+            ignored_namespaces,
+        )
+    )
+
+    translations.extend(
+        gather_translations(
+            AssetType.ENTITY,
+            behavior_pack.entities,
+            settings.get("entities", {}),
+            [NameJsonPath("minecraft:entity/description/name", True, False)],
+            ignored_namespaces,
+        )
+    )
 
     for language in languages:
         try:

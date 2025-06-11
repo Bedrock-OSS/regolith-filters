@@ -3,7 +3,7 @@
     "minecraft:entity": {
         "description": {
             "identifier": "name_ninja:puma",
-            "name": "§3Mountain Lion",
+            "name": "Mountain Lion",
             "is_spawnable": true,
             "is_summonable": true,
             "is_experimental": false

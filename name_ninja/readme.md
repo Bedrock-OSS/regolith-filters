@@ -11,6 +11,7 @@ Simply add a `name` field into the description of a file:
     "description": {
       "identifier": "sirlich:frog",
       "name": "🐸 South American Horned Toad",
+	  "spawn_egg_name": "Froggy Spawn Egg",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false,
@@ -19,7 +20,7 @@ Simply add a `name` field into the description of a file:
 }
 ```
 
-This will add a translation line such as: `entity.sirlich:frog.name=🐸 South American Horned Toad   ## Generated via Regolith` to your language file of choice.
+This will add a translation line such as: `entity.sirlich:frog.name=🐸 South American Horned Toad   ##` and `item.spawn_egg.entity.sirlich:frog.name=Froggy Spawn Egg  ##` to your language file of choice.
 
 ## Using this Filter
 
@@ -62,7 +63,7 @@ Here is a filter, with all options fully defined. These options will be explaine
 			"postfix": "§r"
 		},
 		"spawn_eggs": {
-			"auto_name": true,
+			"auto_name": "from_entity_name",
 			"prefix": "§4",
 			"postfix": " Spawn Egg§r"
 		}
@@ -81,43 +82,41 @@ As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs`
 
 | Property  | Default | Description                                                                                                                                 |
 |-----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| auto_name | False   | Whether to give assets without a 'name' property an auto-generated name. For example `sirlich:woolly_mammoth` would become "Woolly Mammoth" |
+| auto_name | False   | When `true`, assets lacking a `name` property get one auto‐generated from their identifier (e.g. `sirlich:woolly_mammoth` → "Woolly Mammoth"). For spawn-eggs you may set `auto_name` to the string `"from_entity_name"` – this uses the entity's `name` property as the base before applying prefix/postfix if it exists (setting the `spawn_egg_name` property in the entity file will override this). |
 | prefix    | ""      | A prefix that is appended to the start of the translation. Useful for giving color codes to your names.                                     |
 | postfix   | ""      | A postfix that is appended to the end of the translation. Useful for resetting color codes from your names.                                 |
 
 # Changelog
-### 1.2.4
+### 1.3.0
+- Added `spawn_egg_name` property to behavior files, so that it can be used to set the name of the entity's spawn egg.
+- Added `"from_entity_name"` option that can be used for `auto_name` in spawn egg configuration. This property allows generating spawn egg names wit prefix and postfix based on the `name` property set in the entity file.
 
+### 1.2.4
  - Added support for multiple language files via the `languages` setting.
  - Updated `readme.md`
-### 1.2.3
 
+### 1.2.3
  - Fixed issue where it wouldn't create a the lang file if missing
  - Fixed issue where it would fail if an identifier did not exist
 
 ### 1.2.2
-
  - Updated 'reticulator' to 0.1.3-beta
  - Updated 'dpath' to 2.1.2
  - Fixed issue of duplicated keys in lang file while using 'overwrite'.
 
 ### 1.2.1
-
  - Updated 'reticulator' to 0.0.18-beta
  - Fixed associated issue with translations 'stacking' in the export, rather than replacing. 
 
 ### 1.2.0
-
  - Updated 'reticulator' to 0.0.17-beta
  - Corrected a few bugs in the name ninja code especially regarding when using the name key
 
 ### 1.1.0
-
  - Restructured code to use `reticulator` as a proper library dependency
  - Fix name field for `1.10` format items
  - Add `ignored_namespaces` option, which defaults to ['minecraft']
  - Now prints a warning, and gracefully handles assets without identifiers
 
 ### 1.0.0
-
 The first release of Name Ninja

@@ -3,6 +3,7 @@
     "minecraft:entity": {
         "description": {
             "identifier": "name_ninja:spotted_leopard",
+            "spawn_egg_name": "Spotted Egg",
             "is_spawnable": true,
             "is_summonable": true,
             "is_experimental": false
