@@ -1,2 +1,2 @@
 dpath==2.1.2
-reticulator==0.1.3b0
+reticulator==1.0.1
