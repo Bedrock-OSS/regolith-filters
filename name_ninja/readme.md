@@ -86,10 +86,30 @@ As you can see, the settings for `entities`, `blocks`,  `items` and `spawn_eggs`
 | postfix   | ""      | A postfix that is appended to the end of the translation. Useful for resetting color codes from your names.                                 |
 
 # Changelog
+### 1.2.4
 
-### 1.0.0
+ - Added support for multiple language files via the `languages` setting.
+ - Updated `readme.md`
+### 1.2.3
 
-The first release of Name Ninja
+ - Fixed issue where it wouldn't create a the lang file if missing
+ - Fixed issue where it would fail if an identifier did not exist
+
+### 1.2.2
+
+ - Updated 'reticulator' to 0.1.3-beta
+ - Updated 'dpath' to 2.1.2
+ - Fixed issue of duplicated keys in lang file while using 'overwrite'.
+
+### 1.2.1
+
+ - Updated 'reticulator' to 0.0.18-beta
+ - Fixed associated issue with translations 'stacking' in the export, rather than replacing. 
+
+### 1.2.0
+
+ - Updated 'reticulator' to 0.0.17-beta
+ - Corrected a few bugs in the name ninja code especially regarding when using the name key
 
 ### 1.1.0
 
@@ -98,28 +118,6 @@ The first release of Name Ninja
  - Add `ignored_namespaces` option, which defaults to ['minecraft']
  - Now prints a warning, and gracefully handles assets without identifiers
 
-### 1.2.0
+### 1.0.0
 
- - Updated 'reticulator' to 0.0.17-beta
- - Corrected a few bugs in the name ninja code especially regarding when using the name key
-
-### 1.2.1
-
- - Updated 'reticulator' to 0.0.18-beta
- - Fixed associated issue with translations 'stacking' in the export, rather than replacing. 
-
-### 1.2.2
-
- - Updated 'reticulator' to 0.1.3-beta
- - Updated 'dpath' to 2.1.2
- - Fixed issue of duplicated keys in lang file while using 'overwrite'.
-
-### 1.2.3
-
- - Fixed issue where it wouldn't create a the lang file if missing
- - Fixed issue where it would fail if an identifier did not exist
-
-### 1.2.4
-
- - Added support for multiple language files via the `languages` setting.
- - Updated `readme.md`
+The first release of Name Ninja
