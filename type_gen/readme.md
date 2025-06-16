@@ -52,6 +52,22 @@ The output file to write the generated `.d.ts` file to. Defaults to `Files.d.ts`
 
 ## Changelog
 
+### 1.1.0
+
+Add trimming of common prefix to the generated `.d.ts` file.
+
+### 1.0.4
+
+Improve lang file parsing to fix some issues with comments and empty lines.
+
+### 1.0.3
+
+Sort the enums alphabetically for better readability.
+
+### 1.0.2
+
+Use CRLF line endings in the generated `.d.ts` file instead of LF.
+
 ### 1.0.1
 
 [#55](https://github.com/Bedrock-OSS/regolith-filters/pull/55) Fixed issue where the filter would create an infinite loop when editing files in watch mode by [@FrederoxDev](https://github.com/FrederoxDev)
