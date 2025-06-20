@@ -284,25 +284,35 @@ enumContent += createEnumFromJsonFiles(
 );
 
 // Create a custom block states declaration
-const jsonFiles = getJsonFiles("BP/blocks");
-const stateEntries = new Set();
+const jsonFiles = getJsonFiles('BP/blocks');
+const stateEntries = {};
 
 jsonFiles.forEach((file) => {
-  const data = loadJsonFile(file);
-  const states = data["minecraft:block"]["description"]["states"];
-  if (states) {
-    for (const state of Object.keys(states)) {
-      stateEntries.add(state);
+    const data = loadJsonFile(file);
+    const states = data['minecraft:block']['description']['states'];
+    if (states) {
+        for (const state of Object.keys(states)) {
+            let type = 'number';
+            if (Array.isArray(states[state]) && states[state].length > 0) {
+                if (typeof states[state][0] === 'string') {
+                    type = 'string';
+                } else if (typeof states[state][0] === 'boolean') {
+                    type = 'boolean';
+                }
+            }
+            stateEntries[state] = type;
+        }
     }
-  }
 });
-if (stateEntries.size > 0) {
-  enumContent += `
+if (Object.keys(stateEntries).length > 0) {
+    enumContent += `
 import { BlockStateSuperset } from '@minecraft/vanilla-data';
 
 declare module '@minecraft/server' {
   export interface CustomBlockStates {
-    ${[...stateEntries].map((x) => `'${x}': number;`).join("\n")}
+${Object.entries(stateEntries)
+    .map((x) => `    '${x[0]}': ${x[1]};`)
+    .join('\r\n')}
   }
   interface BlockPermutation {
     getState<T extends keyof (BlockStateSuperset & CustomBlockStates)>(
