@@ -283,6 +283,35 @@ enumContent += createEnumFromJsonFiles(
   packsPath + "RP/particles/"
 );
 
+// Create a custom block states declaration
+const jsonFiles = getJsonFiles("BP/blocks");
+const stateEntries = new Set();
+
+jsonFiles.forEach((file) => {
+  const data = loadJsonFile(file);
+  const states = data["minecraft:block"]["description"]["states"];
+  if (states) {
+    for (const state of Object.keys(states)) {
+      stateEntries.add(state);
+    }
+  }
+});
+if (stateEntries.size > 0) {
+  enumContent += `
+import { BlockStateSuperset } from '@minecraft/vanilla-data';
+
+declare module '@minecraft/server' {
+  export interface CustomBlockStates {
+    ${[...stateEntries].map((x) => `'${x}': number;`).join("\n")}
+  }
+  interface BlockPermutation {
+    getState<T extends keyof (BlockStateSuperset & CustomBlockStates)>(
+      stateName: T
+    ): (BlockStateSuperset & CustomBlockStates)[T] | undefined;
+  }
+}`;
+}
+
 // Write to .d.ts file
 const outputFilePath = gametestsPath + "src/" + settings.outputFile;
 

@@ -52,6 +52,10 @@ The output file to write the generated `.d.ts` file to. Defaults to `Files.d.ts`
 
 ## Changelog
 
+### 1.2.0
+
+Add generating a superset of block states to the generated `.d.ts` file.
+
 ### 1.1.0
 
 Add trimming of common prefix to the generated `.d.ts` file.
