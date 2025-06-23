@@ -38,20 +38,42 @@ def get_version() -> str:
     return data['version']
 
 
-def update_manifest(manifest: dict, version: List[int] = None) -> dict:
+def update_manifest(manifest: dict, version: list[int]) -> dict:
     """
-    Takes in a manifest and updates the minor version number by one.
+    Apply a new version list to …
+      - manifest["header"]["version"]
+      - each module whose "type" is "resources" or "data"
+      - each dependency that has a "uuid" key
+
+    Parameters
+    ----------
+    manifest : dict
+        Parsed JSON manifest.
+    version : list[int]
+        Version triple like [1, 2, 3].
+
+    Returns
+    -------
+    dict
+        The modified manifest (in-place edit, but also returned for chaining).
     """
 
-    manifest['header']['version'] = version
+    # ── header ───────────────────────────────────────────────────────────
+    manifest["header"]["version"] = version
 
+    # ── selected modules ────────────────────────────────────────────────
+    allowed_types = {"resources", "data"}
     for module in manifest.get("modules", []):
-        module['version'] = version
+        if module.get("type") in allowed_types:
+            module["version"] = version
 
-    for dependency in manifest.get("dependencies", []):
-        dependency['version'] = version
+    # ── dependencies with uuid ──────────────────────────────────────────
+    for dep in manifest.get("dependencies", []):
+        if dep.get("uuid") is not None:
+            dep["version"] = version
 
     return manifest
+
     
 def main():
     """
