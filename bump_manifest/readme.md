@@ -29,6 +29,14 @@ Every time the filter runs, the version will update (e.g, `[1, 0, 1`]), and the 
 
 # Changelog
 
+### 1.1.1
+
+Adds `exportData` to the filter, so that the filter can actually function.
+
+### 1.1.0
+
+Ensures that only the correct manifest versions are updated when the filter runs.
+
 ### 1.0.0 
 
 The first release of Bump Manifest.

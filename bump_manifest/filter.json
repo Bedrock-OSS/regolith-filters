@@ -1,5 +1,6 @@
 {
     "description": "Bumps the manifest version in your RP and BP. Good for multiplayer testing where you need to avoid pack-caching issues.",
+    "exportData": true,
     "filters": [
         {
             "runWith": "python",
