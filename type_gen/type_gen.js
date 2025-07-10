@@ -68,7 +68,6 @@ function createEnumDeclaration(enumName, keyValuePairs, indent = "") {
   if (Object.keys(keyValuePairs).length === 0) {
     return "";
   }
-  console.log(JSON.stringify(keyValuePairs));
   let enumContent = `${indent}export const enum ${enumName} {\r\n`;
   let sortedEntries = Object.entries(keyValuePairs).sort(([keyA], [keyB]) =>
     keyA.localeCompare(keyB)
