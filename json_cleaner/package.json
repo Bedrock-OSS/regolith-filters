@@ -1,0 +1,7 @@
+{
+  "name": "json_cleaner",
+  "type": "module",
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
+  }
+}

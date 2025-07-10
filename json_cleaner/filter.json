@@ -2,8 +2,8 @@
     "description": "Removes comments from all json files in the project. Useful, since some filters cannot understand files with comments.",
     "filters": [
         {
-            "runWith": "python",
-            "script": "./json_cleaner.py",
+            "runWith": "nodejs",
+            "script": "./json_cleaner.js",
             "name": "Cleaning JSON files for easier reading"
         }
     ]
