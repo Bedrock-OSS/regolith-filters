@@ -64,14 +64,21 @@ function getValueByPath(obj, path) {
 }
 
 // Helper function to create enum declaration
-function createEnumDeclaration(enumName, keyValuePairs) {
+function createEnumDeclaration(enumName, keyValuePairs, indent = "") {
   if (Object.keys(keyValuePairs).length === 0) {
     return "";
   }
-  let enumContent = `export const enum ${enumName} {\r\n`;
+  console.log(JSON.stringify(keyValuePairs));
+  let enumContent = `${indent}export const enum ${enumName} {\r\n`;
   let sortedEntries = Object.entries(keyValuePairs).sort(([keyA], [keyB]) =>
     keyA.localeCompare(keyB)
   );
+  for (let i = 0; i < sortedEntries.length; i++) {
+    // Check if the value is an object and if so, extract the value property
+    if (typeof sortedEntries[i][1] === "object") {
+      sortedEntries[i][1] = sortedEntries[i][1].value;
+    }
+  }
 
   if (settings.trimCommonPrefix && sortedEntries.length) {
     // Start with the first key as the candidate prefix
@@ -95,9 +102,16 @@ function createEnumDeclaration(enumName, keyValuePairs) {
     }
   }
   for (const [key, value] of sortedEntries) {
-    enumContent += `    ${key} = "${value}",\r\n`;
+    if (keyValuePairs[key].comment) {
+      enumContent += `${indent}    /**\r\n${indent}     * ${keyValuePairs[
+        key
+      ].comment
+        .split("\n")
+        .join(`\r\n${indent}     * `)}\r\n${indent}     */\r\n`;
+    }
+    enumContent += `${indent}    ${key} = "${value}",\r\n`;
   }
-  enumContent += `}\r\n\r\n`;
+  enumContent += `${indent}}\r\n\r\n`;
 
   return enumContent;
 }
@@ -191,12 +205,39 @@ function createEnumFromJsonFiles(enumName, valueGetter, directory) {
   return createEnumDeclaration(enumName, enumEntries);
 }
 
+const entityProperties = {};
+
 // List entities
 let enumContent = createEnumFromJsonFiles(
   "Entities",
-  (obj) => getValueByPath(obj, "minecraft:entity/description/identifier"),
+  (obj) => {
+    const id = getValueByPath(obj, "minecraft:entity/description/identifier");
+    const props = getValueByPath(
+      obj,
+      "minecraft:entity/description/properties"
+    );
+    for (const [key, value] of Object.entries(props)) {
+      if (!entityProperties[id]) {
+        entityProperties[id] = {};
+      }
+      entityProperties[id][toTitleCase(key)] = {
+        value: key,
+        comment: `Type: ${value.type}\nDefault: ${value.default}\nClient sync: ${value.client_sync ?? false}${value.range ? `\nRange: ${JSON.stringify(value.range)}` : ""}`,
+      };
+    }
+    return id;
+  },
   packsPath + "BP/entities/"
 );
+
+// List entity properties
+enumContent += `export namespace EntityProperties {\r\n\r\n`;
+for (const [entity, properties] of Object.entries(entityProperties).sort(
+  ([keyA], [keyB]) => keyA.localeCompare(keyB)
+)) {
+  enumContent += createEnumDeclaration(toTitleCase(entity), properties, "    ");
+}
+enumContent += `}\r\n\r\n`;
 
 // List items
 enumContent += createEnumFromJsonFiles(
@@ -284,35 +325,35 @@ enumContent += createEnumFromJsonFiles(
 );
 
 // Create a custom block states declaration
-const jsonFiles = getJsonFiles('BP/blocks');
+const jsonFiles = getJsonFiles("BP/blocks");
 const stateEntries = {};
 
 jsonFiles.forEach((file) => {
-    const data = loadJsonFile(file);
-    const states = data['minecraft:block']['description']['states'];
-    if (states) {
-        for (const state of Object.keys(states)) {
-            let type = 'number';
-            if (Array.isArray(states[state]) && states[state].length > 0) {
-                if (typeof states[state][0] === 'string') {
-                    type = 'string';
-                } else if (typeof states[state][0] === 'boolean') {
-                    type = 'boolean';
-                }
-            }
-            stateEntries[state] = type;
+  const data = loadJsonFile(file);
+  const states = data["minecraft:block"]["description"]["states"];
+  if (states) {
+    for (const state of Object.keys(states)) {
+      let type = "number";
+      if (Array.isArray(states[state]) && states[state].length > 0) {
+        if (typeof states[state][0] === "string") {
+          type = "string";
+        } else if (typeof states[state][0] === "boolean") {
+          type = "boolean";
         }
+      }
+      stateEntries[state] = type;
     }
+  }
 });
 if (Object.keys(stateEntries).length > 0) {
-    enumContent += `
+  enumContent += `
 import { BlockStateSuperset } from '@minecraft/vanilla-data';
 
 declare module '@minecraft/server' {
   export interface CustomBlockStates {
 ${Object.entries(stateEntries)
-    .map((x) => `    '${x[0]}': ${x[1]};`)
-    .join('\r\n')}
+  .map((x) => `    '${x[0]}': ${x[1]};`)
+  .join("\r\n")}
   }
   interface BlockPermutation {
     getState<T extends keyof (BlockStateSuperset & CustomBlockStates)>(
