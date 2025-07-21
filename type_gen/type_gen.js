@@ -211,10 +211,16 @@ let enumContent = createEnumFromJsonFiles(
   "Entities",
   (obj) => {
     const id = getValueByPath(obj, "minecraft:entity/description/identifier");
+    if (!id) {
+      return null; // Skip if no identifier found
+    }
     const props = getValueByPath(
       obj,
       "minecraft:entity/description/properties"
     );
+    if (!props) {
+      return id; // Skip if no properties found
+    }
     for (const [key, value] of Object.entries(props)) {
       if (!entityProperties[id]) {
         entityProperties[id] = {};
