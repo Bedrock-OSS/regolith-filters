@@ -25,6 +25,10 @@ Additionally it can strip `$schema` fields, that are considered an error by Bedr
 
 # Changelog
 
+### 2.0.1
+
+Fix float encoding issues in json_cleaner by @ink0rr in #65
+
 ### 2.0.0
 
 Complete rewrite to NodeJS by @ink0rr in #63
