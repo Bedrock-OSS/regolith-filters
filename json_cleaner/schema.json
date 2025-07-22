@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "json_cleaner",
+  "type": "object",
+  "properties": {
+    "stripSchemas": {
+      "type": "boolean",
+      "default": false,
+      "description": "Removes `$schema` fields from root of every JSON file."
+    },
+    "minify": {
+      "type": "boolean",
+      "default": false,
+      "description": "Minifies JSON files by removing unnecessary whitespace."
+    }
+  }
+}
