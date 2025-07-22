@@ -4,31 +4,58 @@ import { glob, readFile, writeFile } from "node:fs/promises";
 const defSettings = {
   stripSchemas: false,
   minify: false,
-}
+};
 const argParsed = process.argv[2] ? JSON.parse(process.argv[2]) : {};
 const settings = Object.assign({}, defSettings, argParsed);
 
+function minifyJSON(txt) {
+  let res = "";
+  JSONC.visit(txt, {
+    onObjectBegin: () => {
+      res += "{";
+    },
+    onObjectProperty: (name) => {
+      res += `"${name}"`;
+    },
+    onObjectEnd: () => {
+      res += "}";
+    },
+    onArrayBegin: () => {
+      res += "[";
+    },
+    onArrayEnd: () => {
+      res += "]";
+    },
+    onLiteralValue: (_, offset, length) => {
+      res += txt.slice(offset, offset + length);
+    },
+    onSeparator: (sep) => {
+      res += sep;
+    },
+  });
+  return res;
+}
+
 async function cleanJson(path) {
   const txt = await readFile(path, "utf8");
-  let stripped = JSONC.stripComments(txt);
-  let modified = txt !== stripped;
-  if (settings.stripSchemas || settings.minify) {
-    const parsed = JSON.parse(stripped);
-    if (settings.stripSchemas && parsed.$schema) {
-      delete parsed.$schema;
-      modified = true;
-      if (!settings.minify) {
-        stripped = JSON.stringify(parsed, null, 2);
-      } else {
-        stripped = JSON.stringify(parsed);
-      }
-    } else if (settings.minify) {
-      stripped = JSON.stringify(parsed);
-      modified = true;
+  let res = txt;
+
+  if (settings.stripSchemas) {
+    try {
+      // This might throw if the top-level JSON is not an object
+      const edits = JSONC.modify(res, ["$schema"], undefined, {
+        formattingOptions: { keepLines: true },
+      });
+      res = JSONC.applyEdits(res, edits);
+    } catch {
+      // Ignore the errors
     }
   }
-  if (modified) {
-    writeFile(path, stripped);
+
+  res = settings.minify ? minifyJSON(res) : JSONC.stripComments(res);
+
+  if (txt !== res) {
+    writeFile(path, res);
   }
 }
 
