@@ -52,6 +52,23 @@ The output file to write the generated `.d.ts` file to. Defaults to `Files.d.ts`
 
 ## Changelog
 
+### 1.4.0
+
+Change the default output file to `Files.ts` instead of `Files.d.ts`. 
+If an existing `Files.d.ts` file is present, the generated file will be named `Files.d.ts` instead for compatibility.
+
+### 1.3.2
+
+Fixed an issue where the filter would fail, when an entity had no properties.
+
+### 1.3.1
+
+Removed debug logging from the filter.
+
+### 1.3.0
+
+Added entity properties to the generated `.d.ts` file.
+
 ### 1.2.1
 
 Improved generation of block state superset to support boolean and string states.

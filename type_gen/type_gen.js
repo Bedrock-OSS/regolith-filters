@@ -2,9 +2,14 @@ const fs = require("fs");
 const path = require("path");
 
 const settings = {
-  outputFile: "Files.d.ts",
+  outputFile: "Files.ts",
   trimCommonPrefix: false,
 };
+
+// If the legacy file exists, change the default output file to the old default
+if (fs.existsSync("./packs/data/gametests/Files.d.ts")) {
+  settings.outputFile = "Files.d.ts";
+}
 
 if (process.argv[2]) {
   const parsedSettings = JSON.parse(process.argv[2]);
