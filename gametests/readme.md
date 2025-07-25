@@ -102,6 +102,8 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.7.2
+ - Add support for manifest V3
 ### 1.7.1
  - Improved cleaning the path of the source file.
 ### 1.7.0

@@ -265,7 +265,7 @@ if (!settings.disableManifestModification) {
       type: settings.moduleType,
       uuid: settings.moduleUUID,
       language: settings.language,
-      version: [0, 0, 1],
+      version: manifest.format_version === 3 ? "0.0.1" : [0, 0, 1],
       entry,
     });
   } else {
