@@ -102,8 +102,12 @@ module.exports = {
 ```
 
 ## Changelog
-### 1.7.2
+### 1.7.4
  - Add support for manifest V3
+### 1.7.3
+ - Automate dependency updates
+### 1.7.2
+ - Adjust source map when `injectSourceMapping` is enabled
 ### 1.7.1
  - Improved cleaning the path of the source file.
 ### 1.7.0
