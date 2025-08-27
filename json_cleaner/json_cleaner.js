@@ -1,5 +1,6 @@
+import { glob } from "glob";
 import * as JSONC from "jsonc-parser";
-import { glob, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const defSettings = {
   stripSchemas: false,
@@ -60,7 +61,7 @@ async function cleanJson(path) {
 }
 
 for (const dir of ["BP", "RP"]) {
-  for await (const entry of glob(`${dir}/**/*.json`)) {
+  for (const entry of await glob(`${dir}/**/*.json`)) {
     cleanJson(entry);
   }
 }
