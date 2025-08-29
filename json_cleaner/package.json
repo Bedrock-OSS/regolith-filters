@@ -2,6 +2,7 @@
   "name": "json_cleaner",
   "type": "module",
   "dependencies": {
+    "glob": "^11.0.3",
     "jsonc-parser": "^3.3.1"
   }
 }
