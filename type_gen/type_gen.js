@@ -382,6 +382,7 @@ if (fs.existsSync(outputFilePath)) {
 }
 
 if (existingContent !== enumContent) {
+  fs.writeFileSync(`./data/gametests/src/${settings.outputFile}`, enumContent, "utf8");
   fs.writeFileSync(outputFilePath, enumContent, "utf8");
   console.log(
     `Enum written to ${path.relative(process.env.ROOT_DIR, outputFilePath)}`
