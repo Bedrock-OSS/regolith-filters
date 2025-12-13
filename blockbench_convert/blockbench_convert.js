@@ -108,7 +108,8 @@ function compileGroup(data, group) {
   let bone = {};
   bone.name = group.name;
   bone.parent = group.parent;
-  bone.pivot = group.origin.slice();
+  let pivot = group.origin || [0, 0, 0];
+  bone.pivot = pivot.slice();
   bone.pivot[0] *= -1;
   if (group.rotation) {
     if (
