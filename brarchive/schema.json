@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "brarchive",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "replace",
+        "keep_both"
+      ],
+      "default": "replace",
+      "description": "'replace' removes originals after archiving. 'keep_both' keeps archives and originals."
+    },
+    "minify": {
+      "type": "boolean",
+      "default": true,
+      "description": "Minifies JSON content stored in .brarchive files."
+    }
+  }
+}

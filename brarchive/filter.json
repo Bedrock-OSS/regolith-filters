@@ -1,0 +1,10 @@
+{
+  "description": "Archives eligible directories into .brarchive format. Sets pack_optimization_version in manifests.",
+  "filters": [
+    {
+      "name": "Create .brarchive archives from pack content",
+      "runWith": "nodejs",
+      "script": "./brarchive.js"
+    }
+  ]
+}
