@@ -184,6 +184,7 @@ Engine modules (typings-only packages such as `@minecraft/server`) are added to 
 | `disableManifestModification` | boolean                                                  | false                                                   | Disables adding dependencies and script module to the manifest.                                                                                     |
 | `comptime`                    | boolean                                                  | true                                                    | Enables build-time evaluation of `comptime()` calls imported from the virtual `comptime` module.                                                    |
 | `dropLabeledCalls`            | boolean                                                  | true                                                    | When a function's body consists entirely of labels removed by `buildOptions.dropLabels`, calls to it (including their arguments) are removed too.   |
+| `skipDependencyCheck`         | boolean                                                  | false                                                   | Skips checking whether `data/gametests`' npm dependencies are installed. Has no effect when `modules` is `"auto"` or `"auto-dev"`, since resolving them requires the installed packages. |
 
 #### Default Build Options
 
@@ -212,6 +213,8 @@ module.exports = {
 ```
 
 ## Changelog
+### 1.9.0
+ - Added the `skipDependencyCheck` setting (default `false`), letting projects that keep no dependencies in `data/gametests/package.json` skip the `npm ls`/`npm i` check that otherwise runs on every build. Has no effect when `modules` is `"auto"` or `"auto-dev"`.
 ### 1.8.0
  - Added build-time evaluation via the virtual `comptime` module. `comptime(fn)` calls are evaluated in Node.js during the build and replaced with their serialized result; imports and top-level declarations used only by comptime callbacks are removed from the compiled script. See [Build-time evaluation (comptime)](#build-time-evaluation-comptime).
  - Added the `comptime` setting (default `true`) to toggle the feature.

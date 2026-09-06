@@ -133,6 +133,11 @@
       "type": "boolean",
       "default": true,
       "description": "When a function's body consists entirely of labels removed by buildOptions.dropLabels, calls to that function (including their arguments) are removed as well."
+    },
+    "skipDependencyCheck": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skips checking whether data/gametests' npm dependencies are installed. Has no effect when modules is \"auto\" or \"auto-dev\"."
     }
   }
 }

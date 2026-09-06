@@ -64,6 +64,7 @@ const defSettings = {
   disableManifestModification: false,
   comptime: true,
   dropLabeledCalls: true,
+  skipDependencyCheck: false,
 };
 // Reset external property so that it does not cause issues
 defSettings.buildOptions.external = [];
@@ -169,6 +170,7 @@ const typeMap = {
   manifest: "string",
   comptime: "boolean",
   dropLabeledCalls: "boolean",
+  skipDependencyCheck: "boolean",
 };
 const throwTypeError = (k) => {
   throw new TypeError(`${k}: ${JSON.stringify(settings[k])} is not an ${typeMap[k]}`);
@@ -182,12 +184,17 @@ for (let k in typeMap) {
 }
 
 // Check if packages need to be installed. This runs before module resolution,
-// because `modules: "auto"` inspects the installed packages.
-const lsResult = runInShell("npm ls --omit=dev --depth=0 --silent", path.join(process.cwd(), "data", "gametests"), false);
-if (lsResult.status === 1) {
-  console.log("Installing packages...");
-  runInShell("npm i", path.join(process.cwd(), "data", "gametests"), true);
-  runInShell("npm i", path.join(projectRoot, "packs", "data", "gametests"), true);
+// because `modules: "auto"` inspects the installed packages. `skipDependencyCheck`
+// cannot skip it in that case, since resolution would then see a possibly-stale
+// node_modules.
+const autoModules = settings.modules === "auto" || settings.modules === "auto-dev";
+if (!settings.skipDependencyCheck || autoModules) {
+  const lsResult = runInShell("npm ls --omit=dev --depth=0 --silent", path.join(process.cwd(), "data", "gametests"), false);
+  if (lsResult.status === 1) {
+    console.log("Installing packages...");
+    runInShell("npm i", path.join(process.cwd(), "data", "gametests"), true);
+    runInShell("npm i", path.join(projectRoot, "packs", "data", "gametests"), true);
+  }
 }
 
 // Resolve script module dependencies for the manifest and esbuild externals
