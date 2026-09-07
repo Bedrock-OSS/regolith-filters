@@ -1,9 +1,11 @@
 const fs = require("fs");
 const path = require("path");
+const { createJsonLoader } = require("./json_comments.js");
 
 const settings = {
   outputFile: "gametests/src/Files.ts",
   trimCommonPrefix: false,
+  allowJsonComments: false,
 };
 
 // If the legacy file exists, change the default output file to the old default
@@ -108,9 +110,7 @@ function createEnumDeclaration(enumName, keyValuePairs, indent = "") {
 }
 
 // Helper function to load JSON file
-function loadJsonFile(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
+const loadJsonFile = createJsonLoader(settings.allowJsonComments);
 
 // Helper function to load a lang file
 function loadLangFile(filePath) {

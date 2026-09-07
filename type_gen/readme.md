@@ -50,7 +50,30 @@ function spawnExampleEntity(dimension: Dimension) {
 
 The output file path to write the generated `.d.ts` file to. Relative to the data directory. Defaults to `gametests/src/Files.d.ts`.
 
+### allowJsonComments
+
+Whether to accept `//` and `/* */` comments in the pack JSON files this filter reads. Defaults to `false`.
+
+With this disabled the filter fails on such a file; with it enabled the comments are ignored. A `//` or `/*` inside a string value is left alone.
+
+```json
+{
+    "filter": "type_gen",
+    "settings": {
+        "allowJsonComments": true
+    }
+}
+```
+
+## Tests
+
+Run with `node test/run.js` from the filter directory.
+
 ## Changelog
+
+### 1.6.0
+
+Added the `allowJsonComments` setting, allowing the filter to read pack JSON files that contain `//` or `/* */` comments.
 
 ### 1.4.0
 

@@ -12,6 +12,11 @@
       "type": "boolean",
       "default": false,
       "description": "Whether to trim the common prefix from the generated .d.ts file. Defaults to true."
+    },
+    "allowJsonComments": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to accept // and /* */ comments in pack JSON files. Defaults to false."
     }
   }
 }
