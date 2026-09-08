@@ -1,10 +1,59 @@
 {
-    "description": "Removes comments from all json files in the project. Useful, since some filters cannot understand files with comments.",
+    "description": "Removes comments from all JSON files in the project (optionally minifies them and strips root $schema). Native binary, no runtime required.",
     "filters": [
         {
-            "runWith": "nodejs",
-            "script": "./json_cleaner.js",
-            "name": "Cleaning JSON files for easier reading"
+            "runWith": "shell",
+            "command": "echo \"json_cleaner: update Regolith to 1.2.0 or later (the 'when' field with os/arch is required)\"",
+            "when": "false",
+            "name": "Checking whether the when field is available"
+        },
+        {
+            "runWith": "shell",
+            "command": "json_cleaner_requires_regolith_1_2_0_or_later",
+            "when": "false",
+            "name": "Dummy command to stop execution on old Regolith"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-windows-amd64.exe",
+            "when": "os == 'windows' && arch == 'amd64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-windows-arm64.exe",
+            "when": "os == 'windows' && arch == 'arm64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-linux-amd64",
+            "when": "os == 'linux' && arch == 'amd64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-linux-arm64",
+            "when": "os == 'linux' && arch == 'arm64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-macos-amd64",
+            "when": "os == 'darwin' && arch == 'amd64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "exe",
+            "exe": "bin/json_cleaner-macos-arm64",
+            "when": "os == 'darwin' && arch == 'arm64'",
+            "name": "Cleaning JSON files"
+        },
+        {
+            "runWith": "shell",
+            "command": "echo \"json_cleaner: no prebuilt binary for this platform, see json_cleaner/README.md\" ; json_cleaner_unsupported_platform_see_README",
+            "when": "!((os == 'windows' || os == 'linux' || os == 'darwin') && (arch == 'amd64' || arch == 'arm64'))",
+            "name": "Unsupported platform"
         }
     ]
 }

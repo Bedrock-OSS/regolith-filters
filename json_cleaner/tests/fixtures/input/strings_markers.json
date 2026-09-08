@@ -1,0 +1,10 @@
+{
+  "u": "http://x.y/z//w", // real comment
+  "b": "/* not a comment */",
+  "c": "a // b",
+  "q": "she said \"hi\" // still string",
+  "bs": "\\", // ends with escaped backslash
+  "bs2": "\\\"", // backslash then escaped quote
+  "bs3": "a\\\\b",
+  "e": "\n\t\/\u00e9"
+}

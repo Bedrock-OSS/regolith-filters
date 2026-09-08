@@ -1,0 +1,157 @@
+name: json_cleaner
+
+# Quality gate on every change, native build + test of every distributed
+# target, and (manually triggered) a release that commits the binaries to
+# `json_cleaner/bin/` and tags `json_cleaner-<version>` so that a plain
+# `regolith install json_cleaner` receives them.
+#
+# Runner labels are GitHub-hosted runners as documented in 2025/2026
+# (`windows-11-arm` and `ubuntu-24.04-arm` are the native arm64 runners for
+# public repositories). If a label becomes unavailable, replace the runner but
+# keep the target: every binary here is built *and tested* natively, never
+# only cross-compiled.
+
+on:
+  push:
+    paths:
+      - "json_cleaner/**"
+      - ".github/workflows/json_cleaner.yml"
+  pull_request:
+    paths:
+      - "json_cleaner/**"
+      - ".github/workflows/json_cleaner.yml"
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version to tag (must equal the version in json_cleaner/Cargo.toml), e.g. 3.0.0. Leave empty to only build."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: json_cleaner
+
+jobs:
+  check:
+    name: fmt + clippy + test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - run: cargo build --release
+
+  build:
+    name: build + test ${{ matrix.name }}
+    needs: check
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-amd64
+            runner: windows-2025
+            target: x86_64-pc-windows-msvc
+            artifact: json_cleaner-windows-amd64.exe
+          - name: windows-arm64
+            runner: windows-11-arm
+            target: aarch64-pc-windows-msvc
+            artifact: json_cleaner-windows-arm64.exe
+          - name: linux-amd64
+            runner: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
+            artifact: json_cleaner-linux-amd64
+          - name: linux-arm64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            artifact: json_cleaner-linux-arm64
+          - name: macos-amd64
+            runner: macos-15-intel
+            target: x86_64-apple-darwin
+            artifact: json_cleaner-macos-amd64
+          - name: macos-arm64
+            runner: macos-15
+            target: aarch64-apple-darwin
+            artifact: json_cleaner-macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      # The runner architecture matches the target, so the tests execute the
+      # real target binary (musl static binaries run natively on glibc hosts).
+      - run: cargo test --release --target ${{ matrix.target }}
+      - run: cargo build --release --target ${{ matrix.target }}
+      - name: Collect artifact
+        shell: bash
+        run: |
+          mkdir -p dist
+          src="target/${{ matrix.target }}/release/json_cleaner"
+          if [[ "${{ matrix.target }}" == *windows* ]]; then src="$src.exe"; fi
+          cp "$src" "dist/${{ matrix.artifact }}"
+          ls -la dist
+      - name: Inspect binary
+        shell: bash
+        run: |
+          case "${{ matrix.target }}" in
+            *linux-musl*) file dist/${{ matrix.artifact }}; ldd dist/${{ matrix.artifact }} || true ;;
+            *apple*) otool -l dist/${{ matrix.artifact }} | grep -A4 -E "LC_BUILD_VERSION|LC_VERSION_MIN" ;;
+          esac
+      - name: Smoke test the collected binary
+        shell: bash
+        run: |
+          mkdir -p smoke/BP && printf '{ // c\n "a": 1 }' > smoke/BP/a.json
+          cd smoke && "../dist/${{ matrix.artifact }}" '{"minify":true}' && cat BP/a.json && echo
+          test "$(cat BP/a.json)" = '{"a":1}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: json_cleaner/dist/${{ matrix.artifact }}
+          if-no-files-found: error
+
+  release:
+    name: commit binaries and tag
+    if: github.event_name == 'workflow_dispatch' && inputs.release_version != ''
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check version
+        run: |
+          crate_version=$(grep -m1 '^version' Cargo.toml | sed -E 's/version = "(.*)"/\1/')
+          if [ "$crate_version" != "${{ inputs.release_version }}" ]; then
+            echo "Cargo.toml version ($crate_version) != release_version (${{ inputs.release_version }})"; exit 1
+          fi
+          if git rev-parse "json_cleaner-${{ inputs.release_version }}" >/dev/null 2>&1; then
+            echo "tag json_cleaner-${{ inputs.release_version }} already exists"; exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          path: json_cleaner/bin
+          merge-multiple: true
+      - name: Commit binaries and tag
+        run: |
+          chmod +x bin/json_cleaner-*
+          ls -la bin
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add bin
+          git commit -m "json_cleaner: release ${{ inputs.release_version }} binaries"
+          git tag "json_cleaner-${{ inputs.release_version }}"
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "json_cleaner-${{ inputs.release_version }}"

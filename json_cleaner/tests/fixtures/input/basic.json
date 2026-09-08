@@ -1,0 +1,6 @@
+{
+    // comment
+    "number": 1.00,
+    "url": "https://example.com/a//b",
+    "escaped": "\u0061"
+}

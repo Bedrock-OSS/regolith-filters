@@ -1,0 +1,10 @@
+{
+  "u": "http://x.y/z//w", 
+  "b": "/* not a comment */",
+  "c": "a // b",
+  "q": "she said \"hi\" // still string",
+  "bs": "\\", 
+  "bs2": "\\\"", 
+  "bs3": "a\\\\b",
+  "e": "\n\t\/\u00e9"
+}

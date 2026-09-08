@@ -1,0 +1,9 @@
+// start
+/* block */ {
+  "a": 1, // line
+  /* mid */ "b": /* inline */ 2,
+  "c": [ // after bracket
+    3
+  ]
+} // end
+// eof no newline

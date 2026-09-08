@@ -1,0 +1,4 @@
+# Fixtures are byte-exact test data (LF, CR and CRLF variants): never convert line endings.
+tests/fixtures/** -text
+# Prebuilt binaries.
+bin/* -text

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://example.com/schema.json",
+  
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "$schema": "nested stays",
+    "description": { "identifier": "a:b" }
+  }
+}
