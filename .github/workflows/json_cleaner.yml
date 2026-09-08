@@ -5,6 +5,11 @@ name: json_cleaner
 # `json_cleaner/bin/` and tags `json_cleaner-<version>` so that a plain
 # `regolith install json_cleaner` receives them.
 #
+# The Rust crate lives in `json_cleaner/test/` (Regolith strips a filter's
+# top-level `test` folder on install, so sources, fixtures and benchmarks never
+# land in `.regolith/cache`); the `check` and `build` jobs run there, the
+# `release` job runs in `json_cleaner/` because it commits `bin/`.
+#
 # Runner labels are GitHub-hosted runners as documented in 2025/2026
 # (`windows-11-arm` and `ubuntu-24.04-arm` are the native arm64 runners for
 # public repositories). If a label becomes unavailable, replace the runner but
@@ -23,7 +28,7 @@ on:
   workflow_dispatch:
     inputs:
       release_version:
-        description: "Release version to tag (must equal the version in json_cleaner/Cargo.toml), e.g. 3.0.0. Leave empty to only build."
+        description: "Release version to tag (must equal the version in json_cleaner/test/Cargo.toml), e.g. 3.0.0. Leave empty to only build."
         required: false
         default: ""
 
@@ -38,6 +43,9 @@ jobs:
   check:
     name: fmt + clippy + test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: json_cleaner/test
     strategy:
       fail-fast: false
       matrix:
@@ -56,6 +64,9 @@ jobs:
     name: build + test ${{ matrix.name }}
     needs: check
     runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        working-directory: json_cleaner/test
     strategy:
       fail-fast: false
       matrix:
@@ -117,7 +128,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: json_cleaner/dist/${{ matrix.artifact }}
+          path: json_cleaner/test/dist/${{ matrix.artifact }}
           if-no-files-found: error
 
   release:
@@ -133,9 +144,9 @@ jobs:
           fetch-depth: 0
       - name: Check version
         run: |
-          crate_version=$(grep -m1 '^version' Cargo.toml | sed -E 's/version = "(.*)"/\1/')
+          crate_version=$(grep -m1 '^version' test/Cargo.toml | sed -E 's/version = "(.*)"/\1/')
           if [ "$crate_version" != "${{ inputs.release_version }}" ]; then
-            echo "Cargo.toml version ($crate_version) != release_version (${{ inputs.release_version }})"; exit 1
+            echo "test/Cargo.toml version ($crate_version) != release_version (${{ inputs.release_version }})"; exit 1
           fi
           if git rev-parse "json_cleaner-${{ inputs.release_version }}" >/dev/null 2>&1; then
             echo "tag json_cleaner-${{ inputs.release_version }} already exists"; exit 1

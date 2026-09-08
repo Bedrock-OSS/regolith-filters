@@ -264,13 +264,13 @@ were recorded in separate chunks over about two hours; no drift was observed
 (for example 10 000 rewrites took 14.2 s and 3 000 rewrites plus 7 000 reads
 took 5.3 s, both consistent with 1.4 ms per rewrite and 0.15 ms per read),
 but cross-table comparisons should still stay at the "same order of
-magnitude" level. Commands:
+magnitude" level. Commands (run inside `json_cleaner/test`, the Rust crate directory):
 
 ```sh
 cargo bench --bench transform
-python bench/e2e.py --rust bin/json_cleaner-windows-amd64.exe --node <old>/json_cleaner.js --work D:/bench_work --warm --corpora 10000x2K,5000x8K,1000x64K,100x1M --dirty 0,0.3,1 --settings comments,minify,schema,schema_minify --threads 1,0 --reps 3
-python bench/e2e.py --rust bin/json_cleaner-windows-amd64.exe --work D:/bench_work --warm --corpora 10000x2K,1000x64K,small_50x4K --dirty 1 --settings comments --threads 1,2,4,8,16,0 --reps 3
-python bench/e2e.py --rust bin/json_cleaner-windows-amd64.exe --node <old>/json_cleaner.js --work D:/bench_work --warm --real <project>/packs --corpora small_50x4K --reps 5
+python bench/e2e.py --rust ../bin/json_cleaner-windows-amd64.exe --node <old>/json_cleaner.js --work D:/bench_work --warm --corpora 10000x2K,5000x8K,1000x64K,100x1M --dirty 0,0.3,1 --settings comments,minify,schema,schema_minify --threads 1,0 --reps 3
+python bench/e2e.py --rust ../bin/json_cleaner-windows-amd64.exe --work D:/bench_work --warm --corpora 10000x2K,1000x64K,small_50x4K --dirty 1 --settings comments --threads 1,2,4,8,16,0 --reps 3
+python bench/e2e.py --rust ../bin/json_cleaner-windows-amd64.exe --node <old>/json_cleaner.js --work D:/bench_work --warm --real <project>/packs --corpora small_50x4K --reps 5
 ```
 
 ### Micro-benchmarks, all sizes (MiB/s)

@@ -17,8 +17,8 @@ import sys
 import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FILTER_DIR = os.path.dirname(HERE)
-REPO = os.path.dirname(FILTER_DIR)
+CRATE_DIR = os.path.dirname(HERE)  # json_cleaner/test
+REPO = os.path.dirname(os.path.dirname(CRATE_DIR))
 OLD_TAG = "json_cleaner-2.0.2"
 COMBOS = {
     "comments": {},
@@ -52,7 +52,7 @@ def main():
     scratch = sys.argv[2] if len(sys.argv) > 2 else os.path.join(tempfile.gettempdir(), "json_cleaner_compare")
     os.makedirs(scratch, exist_ok=True)
     old_js = fetch_old(scratch)
-    inputs = os.path.join(FILTER_DIR, "tests", "fixtures", "input")
+    inputs = os.path.join(CRATE_DIR, "tests", "fixtures", "input")
     differences = 0
     for combo, settings in COMBOS.items():
         outputs = {}

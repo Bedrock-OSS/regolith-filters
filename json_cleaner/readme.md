@@ -40,7 +40,7 @@ Regolith 1.2.0 or later is required (the filter relies on the `when` field with 
 | macOS x64       | `bin/json_cleaner-macos-amd64`       |
 | macOS arm64     | `bin/json_cleaner-macos-arm64`       |
 
-Which binaries have actually been executed and tested where is listed in [benchmarks.md](benchmarks.md).
+Which binaries have actually been executed and tested where is listed in [test/benchmarks.md](test/benchmarks.md).
 
 ## What exactly happens to a file
 
@@ -81,16 +81,35 @@ The rewrite fixes several bugs of the old implementation. The observable differe
 * With `minify`, invalid input is no longer silently truncated or "repaired" (2.x dropped everything after the first value, appended `}` to unterminated strings and cut strings at raw line breaks).
 * With `stripSchemas`, *all* root `$schema` properties are removed (2.x removed only the first), the rest of the file is not re-indented (2.x re-indented the affected lines with tabs), and `{"$schema":"x",}` becomes `{}` instead of the broken `{,}`.
 * With `stripSchemas`, a file whose root object cannot be scanned safely is left structurally untouched (2.x could destroy such a file, e.g. `{"$schema":[1,"k":2}` became `{`).
-* Comment removal without `minify` is byte-identical to 2.x for every fixture in `tests/fixtures` except the non-UTF-8 one (see `tools/compare_with_old.py`).
+* Comment removal without `minify` is byte-identical to 2.x for every fixture in `test/tests/fixtures` except the non-UTF-8 one (see `test/tools/compare_with_old.py`).
 * `.JSON` files (upper case extension) are processed on every platform; 2.x processed them on Windows and macOS only.
 * A settings argument that is not a JSON object, or a setting with a wrong type, is an error (2.x ignored wrong types and treated any truthy value as `true`).
 * Large projects work: 2.x started a read and a write for every file at once and died with `EMFILE: too many open files` on a 10 000-file project; 3.x uses a small fixed worker pool.
+
+## Where the source code is
+
+The whole Rust crate (`Cargo.toml`, `src/`, `tests/`, `benches/`, `bench/`, `tools/`, `benchmarks.md`) lives in the `test/` directory of this filter, not next to `filter.json`.
+
+The name is deliberate. Regolith installs a filter by copying its whole directory into `.regolith/cache/filters/<name>` and then deletes the top-level `test` folder (that folder is reserved for a filter's own tests and is never used at run time). Putting the crate in `test/` therefore keeps the sources, the several hundred test fixtures and the benchmarks out of every user's `.regolith/cache`: only what the filter needs to run is installed, that is `filter.json`, the prebuilt binaries in `bin/`, `schema.json`, `completion.md` and this readme. Nothing in `test/` is needed to use the filter; it is needed only to build, test or release it.
+
+```
+json_cleaner/
+├── filter.json      installed
+├── bin/             installed: prebuilt binaries, one per platform
+├── schema.json      installed: settings schema
+├── completion.md    installed
+├── readme.md        installed
+└── test/            NOT installed: the Rust crate (sources, tests, benchmarks, tools)
+```
 
 ## Development
 
 Requirements: a stable Rust toolchain (1.75 or newer). Nothing else.
 
+All commands below are run inside `test/` (see *Where the source code is* above):
+
 ```sh
+cd test
 cargo test                                      # unit, fixture, differential (proptest), filesystem and CLI tests
 cargo clippy --all-targets -- -D warnings
 cargo fmt --check
@@ -108,7 +127,7 @@ The binary takes the settings as its first argument, exactly as Regolith passes 
 | `JSON_CLEANER_BACKEND` | `memchr` (default) or `scalar` (the reference scanner)             |
 | `JSON_CLEANER_VERBOSE` | Print a one-line summary on success                                |
 
-Code layout: `src/transform.rs` (comment/whitespace scanner, scalar reference + memchr backend), `src/schema.rs` (root `$schema` remover), `src/process.rs` (per-file I/O and timestamp handling), `src/run.rs` (directory walk and worker pool), `src/settings.rs`, `src/main.rs`.
+Code layout (inside `test/`): `src/transform.rs` (comment/whitespace scanner, scalar reference + memchr backend), `src/schema.rs` (root `$schema` remover), `src/process.rs` (per-file I/O and timestamp handling), `src/run.rs` (directory walk and worker pool), `src/settings.rs`, `src/main.rs`.
 
 ### Releasing binaries
 
@@ -124,7 +143,7 @@ The Linux and macOS binaries must be committed with the executable bit (`100755`
 
 ### 3.0.0
 
-Rewrite as a native binary (Rust), no runtime required. Lexical, byte-preserving transformation; exact modification-time preservation; unchanged files are not written; root `$schema` removal handles every occurrence and escaped names; parallel processing. See *Differences from version 2.x* above and `benchmarks.md` for measurements.
+Rewrite as a native binary (Rust), no runtime required. Lexical, byte-preserving transformation; exact modification-time preservation; unchanged files are not written; root `$schema` removal handles every occurrence and escaped names; parallel processing. See *Differences from version 2.x* above and `test/benchmarks.md` for measurements.
 
 ### 2.0.2
 
