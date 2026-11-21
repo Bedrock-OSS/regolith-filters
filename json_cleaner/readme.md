@@ -143,7 +143,21 @@ The Linux and macOS binaries must be committed with the executable bit (`100755`
 
 ### 3.0.0
 
-Rewrite as a native binary (Rust), no runtime required. Lexical, byte-preserving transformation; exact modification-time preservation; unchanged files are not written; root `$schema` removal handles every occurrence and escaped names; parallel processing. See *Differences from version 2.x* above and `test/benchmarks.md` for measurements.
+Rewritten as a native binary (Rust). Node.js is no longer needed.
+
+Breaking changes:
+- Requires Regolith 1.2.0 or later (the filter picks its binary with the `when` field).
+- Settings are checked: a settings value that is not an object, or a setting with a wrong type, stops the build (2.x ignored wrong types and treated any truthy value as `true`).
+- Read-only JSON files are an error, even when they would not change.
+- `.JSON` files (upper case) are processed on every platform (2.x only on Windows and macOS).
+
+Changes:
+- Several times faster: about 20 ms instead of 150 ms on a 432-file add-on, and 5-40x faster on large files (see `test/benchmarks.md`).
+- Byte-preserving: only comments, whitespace (with `minify`) and root `$schema` fields are removed. Numbers, escapes and key order stay exactly as written.
+- Files that do not change are not written, and rewritten files keep their modification time.
+- Root `$schema` removal handles duplicate and escaped keys.
+- Works on large projects: 2.x crashed with `EMFILE: too many open files` at about 10 000 files.
+- Every error names the file and the operation; all other files are still processed before the filter fails.
 
 ### 2.0.2
 
